@@ -3,3 +3,7 @@
 [![Build Status](https://travis-ci.org/fey/php-project-lvl2.svg?branch=master)](https://travis-ci.org/fey/php-project-lvl2)
 [![Latest Stable Version](https://poser.pugx.org/fey/gendiff/v/stable)](https://packagist.org/packages/fey/gendiff)
 [![Latest Unstable Version](https://poser.pugx.org/fey/gendiff/v/unstable)](https://packagist.org/packages/fey/gendiff)
+
+#
+## asciinema
+[![asciicast](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78.svg)](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78)
