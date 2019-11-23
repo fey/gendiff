@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c71556afa11cf711e552dacda0ca722c",
+    "content-hash": "86396eec854415958c5cd0bef343fe0d",
     "packages": [
         {
             "name": "docopt/docopt",
@@ -2872,7 +2872,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2"
+        "php": "^7.3"
     },
     "platform-dev": []
 }
