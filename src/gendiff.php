@@ -25,17 +25,17 @@ function calcDiff(array $data1, array $data2): array
             if ($value1 === $value2) {
                 $diff[$key1] = $value1;
             } else {
-                $diff["- {$key1}"]= $value1;
-                $diff["+ {$key1}"]= $value2;
+                $diff["- {$key1}"] = $value1;
+                $diff["+ {$key1}"] = $value2;
             }
         } else {
-            $diff["- {$key1}"]= $value1;
+            $diff["- {$key1}"] = $value1;
         }
     }
 
     foreach ($data2 as $key2 => $value2) {
         if (array_key_exists($key2, $data1) === false) {
-            $diff["+ {$key2}"]= $value2;
+            $diff["+ {$key2}"] = $value2;
         }
     }
 
