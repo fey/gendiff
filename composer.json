@@ -15,6 +15,9 @@
       "fey\\GenDiff\\Tests\\": "tests"
     }
   },
+  "bin": [
+      "bin/gendiff"
+  ],
   "require": {
     "docopt/docopt": "^1.0",
     "php": "^7.3"
