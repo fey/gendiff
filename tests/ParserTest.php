@@ -8,19 +8,16 @@ use function fey\GenDiff\genDiff;
 
 class ParserTest extends TestCase
 {
-    public function testGenDiffFlatFiles()
+    public function testDiffJson()
     {
-        $diff = genDiff(__DIR__ . DIRECTORY_SEPARATOR . 'data1.json', __DIR__ . DIRECTORY_SEPARATOR . 'data2.json');
+        $diff = genDiff(__DIR__ . '/data1.json', __DIR__ . '/data2.json');
 
-        $expected = <<<'DIFF'
-{
-    "host": "hexlet.io",
-    "- timeout": 50,
-    "+ timeout": 20,
-    "- proxy": "123.234.53.22",
-    "+ verbose": true
-}
-DIFF;
-        $this->assertEquals($expected, $diff);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/expected-flat-output.json', $diff);
+    }
+
+    public function testDiffYaml()
+    {
+        $diff = genDiff(__DIR__ . '/before.yml', __DIR__ . '/after.yml');
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/expected-flat-output.json', $diff);
     }
 }

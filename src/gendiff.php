@@ -2,16 +2,14 @@
 
 namespace fey\GenDiff;
 
+use Symfony\Component\Yaml\Yaml;
+
 function genDiff(string $filePath1, string $filePath2): string
 {
-    $fileContent1 = file_get_contents($filePath1);
-    $fileContent2 = file_get_contents($filePath2);
-
-    $data1 = parseJson($fileContent1);
-    $data2 = parseJson($fileContent2);
+    $data1 = parse($filePath1);
+    $data2 = parse($filePath2);
 
     $diff = calcDiff($data1, $data2);
-
     return stringifyDiff($diff);
 }
 
@@ -44,9 +42,30 @@ function calcDiff(array $data1, array $data2): array
 }
 
 
+function parse($filePath)
+{
+
+    $fileContent = file_get_contents($filePath);
+
+    switch (pathinfo($filePath, PATHINFO_EXTENSION)) {
+        case 'yaml':
+        case 'yml':
+            return parseYaml($fileContent);
+        case 'json':
+            return parseJson($fileContent);
+        default:
+            return;
+    }
+}
+
 function parseJson(string $data)
 {
     return json_decode($data, true);
+}
+
+function parseYaml(string $data)
+{
+    return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
 }
 
 function stringifyDiff(array $diff)
