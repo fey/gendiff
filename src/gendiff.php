@@ -15,28 +15,32 @@ function genDiff(string $filePath1, string $filePath2): string
 
 function calcDiff(array $data1, array $data2): array
 {
-    $diff = [];
-
-    foreach ($data1 as $key1 => $value1) {
-        if (array_key_exists($key1, $data2)) {
-            $value2 = $data2[$key1];
-            if ($value1 === $value2) {
-                $diff[$key1] = $value1;
+    $keys = array_merge(array_keys($data1), array_keys($data2));
+    $diff = array_reduce($keys, function ($acc, $key) use ($data1, $data2) {
+        $oldValue = $data1[$key] ?? null;
+        $newValue = $data2[$key] ?? null;
+        if (array_key_exists($key, $data1) && !array_key_exists($key, $data2)) {
+            $state = 'removed';
+        }
+        if (!array_key_exists($key, $data1) && array_key_exists($key, $data2)) {
+            $state = 'added';
+        }
+        if (array_key_exists($key, $data1) && array_key_exists($key, $data2)) {
+            $oldValue = $data1[$key];
+            $newValue = $data2[$key];
+            if ($oldValue === $newValue) {
+                $state = 'unchanged';
             } else {
-                $diff["- {$key1}"] = $value1;
-                $diff["+ {$key1}"] = $value2;
+                $state = 'changed';
             }
-        } else {
-            $diff["- {$key1}"] = $value1;
         }
-    }
-
-    foreach ($data2 as $key2 => $value2) {
-        if (array_key_exists($key2, $data1) === false) {
-            $diff["+ {$key2}"] = $value2;
-        }
-    }
-
+        $acc[$key] = [
+            'state' => $state,
+            'oldValue' => $oldValue,
+            'newValue' => $newValue,
+        ];
+        return $acc;
+    }, []);
 
     return $diff;
 }
@@ -68,7 +72,45 @@ function parseYaml(string $data)
     return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
 }
 
-function stringifyDiff(array $diff)
+function stringifyDiff(array $diff): string
 {
-    return json_encode($diff, JSON_PRETTY_PRINT);
+    $result[] = '{';
+    $unchanged = '    ';
+    $removed = '  - ';
+    $added = '  + ';
+
+    foreach ($diff as $key => ['state' => $state, 'oldValue' => $oldValue, 'newValue' => $newValue]) {
+        $oldValue = stringifyValue($oldValue);
+        $newValue = stringifyValue($newValue);
+        switch ($state) {
+            case 'unchanged':
+                $result[] = "{$unchanged}{$key}: {$oldValue}";
+                break;
+            case 'removed':
+                $result[] = "{$removed}{$key}: {$oldValue}";
+                break;
+            case 'added':
+                $result[] = "{$added}{$key}: {$newValue}";
+                break;
+            case 'changed':
+                $result[] = "{$added}{$key}: {$newValue}";
+                $result[] = "{$removed}{$key}: {$oldValue}";
+                break;
+            default:
+                break;
+        }
+    }
+    $result[] = '}';
+
+    return implode(PHP_EOL, $result);
+}
+
+function stringifyValue($value)
+{
+    if (is_bool($value)) {
+        $val = $value ? 'true' : 'false';
+        return $val;
+    }
+
+    return $value;
 }
