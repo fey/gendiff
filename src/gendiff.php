@@ -4,6 +4,11 @@ namespace fey\GenDiff;
 
 use Symfony\Component\Yaml\Yaml;
 
+const CHANGED = 'changed';
+const UNCHANGED = 'unchanged';
+const REMOVED = 'removed';
+const ADDED = 'added';
+
 function genDiff(string $filePath1, string $filePath2): string
 {
     $data1 = parse($filePath1);
@@ -26,8 +31,6 @@ function calcDiff(array $data1, array $data2): array
             $state = 'added';
         }
         if (array_key_exists($key, $data1) && array_key_exists($key, $data2)) {
-            $oldValue = $data1[$key];
-            $newValue = $data2[$key];
             if ($oldValue === $newValue) {
                 $state = 'unchanged';
             } else {
@@ -35,7 +38,8 @@ function calcDiff(array $data1, array $data2): array
             }
         }
         $acc[$key] = [
-            'state' => $state,
+            'key'      => $key,
+            'state'    => $state,
             'oldValue' => $oldValue,
             'newValue' => $newValue,
         ];
@@ -74,35 +78,41 @@ function parseYaml(string $data)
 
 function stringifyDiff(array $diff): string
 {
-    $result[] = '{';
     $unchanged = '    ';
-    $removed = '  - ';
-    $added = '  + ';
+    $removed   = '  - ';
+    $added     = '  + ';
 
-    foreach ($diff as $key => ['state' => $state, 'oldValue' => $oldValue, 'newValue' => $newValue]) {
+    $result = array_reduce($diff, function ($acc, $node) use ($unchanged, $removed, $added) {
+        ['state' => $state, 'newValue' => $newValue, 'oldValue' => $oldValue, 'key' => $key] = $node;
         $oldValue = stringifyValue($oldValue);
         $newValue = stringifyValue($newValue);
+
         switch ($state) {
             case 'unchanged':
-                $result[] = "{$unchanged}{$key}: {$oldValue}";
+                $acc[] = "{$unchanged}{$key}: {$oldValue}";
                 break;
             case 'removed':
-                $result[] = "{$removed}{$key}: {$oldValue}";
+                $acc[] = "{$removed}{$key}: {$oldValue}";
                 break;
             case 'added':
-                $result[] = "{$added}{$key}: {$newValue}";
+                $acc[] = "{$added}{$key}: {$newValue}";
                 break;
             case 'changed':
-                $result[] = "{$added}{$key}: {$newValue}";
-                $result[] = "{$removed}{$key}: {$oldValue}";
+                $acc[] = "{$added}{$key}: {$newValue}";
+                $acc[] = "{$removed}{$key}: {$oldValue}";
                 break;
             default:
                 break;
         }
-    }
-    $result[] = '}';
+        return $acc;
+    }, []);
+    return implode(PHP_EOL, ['{', ...($result), '}']);
+}
 
-    return implode(PHP_EOL, $result);
+
+function indentString($someString, ?int $level = 0): string
+{
+    return str_repeat('    ', $level) . $someString;
 }
 
 function stringifyValue($value)
