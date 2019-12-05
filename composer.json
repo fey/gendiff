@@ -1,37 +1,36 @@
 {
-  "name": "fey/gendiff",
-  "authors": [
-    {
-      "name": "feycot",
-      "email": "feycot@gmail.com"
+    "name": "fey/gendiff",
+    "authors": [
+        {
+            "name": "feycot",
+            "email": "feycot@gmail.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "src/gendiff.php"
+        ],
+        "psr-4": {
+            "fey\\GenDiff\\Tests\\": "tests"
+        }
+    },
+    "bin": [
+        "bin/gendiff"
+    ],
+    "require": {
+        "docopt/docopt": "^1.0",
+        "php": "^7.4",
+        "symfony/yaml": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.4",
+        "squizlabs/php_codesniffer": "^3.5",
+        "phpstan/phpstan": "^0.11.19"
+    },
+    "scripts": {
+        "phpunit": "phpunit",
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf",
+        "phpstan": "phpstan"
     }
-  ],
-  "autoload": {
-      "files": [
-          "src/gendiff.php"
-      ],
-
-    "psr-4": {
-      "fey\\GenDiff\\Tests\\": "tests"
-    }
-  },
-  "bin": [
-      "bin/gendiff"
-  ],
-  "require": {
-    "docopt/docopt": "^1.0",
-    "php": "^7.3",
-    "symfony/yaml": "^5.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^8.4",
-    "squizlabs/php_codesniffer": "^3.5",
-    "phpstan/phpstan": "^0.11.19"
-  },
-  "scripts": {
-    "phpunit": "phpunit",
-    "phpcs": "phpcs",
-    "phpcbf": "phpcbf",
-    "phpstan": "phpstan"
-  }
 }
