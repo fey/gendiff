@@ -114,16 +114,16 @@ function stringifyDiff(array $diff): string
                 $newValue = stringifyValue($newValue);
                 $oldValue = stringifyValue($oldValue);
                 switch ($state) {
-                    case CHANGED:
+                    case UNCHANGED:
                         $acc[] = "{$indent}{$unchanged}{$key}: {$oldValue}";
                         break;
-                    case UNCHANGED:
+                    case REMOVED:
                         $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
                         break;
-                    case REMOVED:
+                    case ADDED:
                         $acc[] = "{$indent}{$added}{$key}: {$newValue}";
                         break;
-                    case ADDED:
+                    case CHANGED:
                         $acc[] = "{$indent}{$added}{$key}: {$newValue}";
                         $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
                         break;
