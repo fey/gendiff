@@ -110,7 +110,7 @@ function stringifyDiff(array $diff): string
                     $key
                 );
                 $acc[] = implode($indent . PHP_EOL, $iter($children, [], $level + 1));
-                $acc[] = $indent . $indent . '}';
+                $acc[] = makeIndent($level + 1) . '}';
             } else {
                 $newValue = stringifyValue($newValue);
                 $oldValue = stringifyValue($oldValue);
