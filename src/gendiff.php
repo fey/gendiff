@@ -9,13 +9,19 @@ const UNCHANGED = 'unchanged';
 const REMOVED   = 'removed';
 const ADDED     = 'added';
 
-function genDiff(string $filePath1, string $filePath2): string
+function genDiff(string $filePath1, string $filePath2, $format = 'pretty'): string
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
 
     $diff = calcDiff($data1, $data2);
-    return stringifyDiff($diff);
+
+    switch ($format) {
+        case 'plain':
+            return plainDiff($diff);
+        default:
+            return prettyDiff($diff);
+    }
 }
 
 function calcDiff(array $data1, array $data2): array
@@ -83,14 +89,17 @@ function parseYaml(string $data)
     return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
 }
 
-function stringifyDiff(array $diff): string
+function prettyDiff(array $diff): string
 {
     $unchanged = '    ';
     $removed   = '  - ';
     $added     = '  + ';
+    $makeIndent = function ($level) {
+        return str_repeat('    ', $level);
+    };
 
-    $iter = function ($diff, $acc, $level) use (&$iter, $unchanged, $removed, $added) {
-        $indent = makeIndent($level);
+    $iter = function ($diff, $acc, $level) use (&$iter, $unchanged, $removed, $added, $makeIndent) {
+        $indent = $makeIndent($level);
         foreach ($diff as $node) {
             [
                 'state'    => $state,
@@ -109,7 +118,7 @@ function stringifyDiff(array $diff): string
                     $key
                 );
                 $acc[] = implode($indent . PHP_EOL, $iter($children, [], $level + 1));
-                $acc[] = makeIndent($level + 1) . '}';
+                $acc[] = $makeIndent($level + 1) . '}';
             } else {
                 $newValue = stringifyValue($newValue);
                 $oldValue = stringifyValue($oldValue);
@@ -144,10 +153,32 @@ function stringifyDiff(array $diff): string
     ]) . PHP_EOL;
 }
 
-function makeIndent($level)
+function plainDiff(array $diff): string
 {
-    return str_repeat('    ', $level);
+    $messages = [
+        REMOVED => "Property '%s' was removed",
+        ADDED   => "Property '%s' was added with value: '%s'",
+        CHANGED => "Property '%s' was changed. From '%s' to '%s'",
+    ];
+
+    $result = [];
+
+    foreach ($diff as $node) {
+        [
+            'state'    => $state,
+            'type'     => $type,
+            'newValue' => $newValue,
+            'oldValue' => $oldValue,
+            'key'      => $key,
+        ] = $node;
+
+        if (array_key_exists($state, $messages)) {
+        }
+    }
+    return '';
 }
+
+
 
 function stringifyValue($value)
 {

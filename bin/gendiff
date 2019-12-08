@@ -17,7 +17,7 @@ Generate diff
 
 Usage:
   gendiff (-h|--help)
-  gendiff [--format <fmt>] <firstFile> <secondFile>
+  gendiff [--format <fmt>] firstFile secondFile
 
 Options:
   -h --help                     Show this screen
@@ -25,8 +25,11 @@ Options:
 
 DOC;
 
-Docopt::handle($doc);
-
-$diff = genDiff($argv[1], $argv[2]);
-
+$docopt = Docopt::handle($doc);
+[
+    'firstFile'  => $firstFile,
+    'secondFile' => $secondFile,
+    '--format'   => $format,
+] = $docopt->args;
+$diff = genDiff($firstFile, $secondFile, $format);
 echo $diff;
