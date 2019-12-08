@@ -4,10 +4,10 @@ namespace fey\GenDiff;
 
 use Symfony\Component\Yaml\Yaml;
 
-const CHANGED = 'changed';
+const CHANGED   = 'changed';
 const UNCHANGED = 'unchanged';
-const REMOVED = 'removed';
-const ADDED = 'added';
+const REMOVED   = 'removed';
+const ADDED     = 'added';
 
 function genDiff(string $filePath1, string $filePath2): string
 {
@@ -60,7 +60,6 @@ function calcDiff(array $data1, array $data2): array
 
 function parse($filePath)
 {
-
     $fileContent = file_get_contents($filePath);
 
     switch (pathinfo($filePath, PATHINFO_EXTENSION)) {
@@ -102,7 +101,7 @@ function stringifyDiff(array $diff): string
                 'children' => $children
             ] = $node;
             if ($type === 'tree') {
-                $state = 'changed' === $state ? 'unchanged' : $state;
+                $state = CHANGED === $state ? UNCHANGED : $state;
                 $acc[] = sprintf(
                     '%s%s%s: {',
                     $indent,
@@ -115,16 +114,16 @@ function stringifyDiff(array $diff): string
                 $newValue = stringifyValue($newValue);
                 $oldValue = stringifyValue($oldValue);
                 switch ($state) {
-                    case 'unchanged':
+                    case CHANGED:
                         $acc[] = "{$indent}{$unchanged}{$key}: {$oldValue}";
                         break;
-                    case 'removed':
+                    case UNCHANGED:
                         $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
                         break;
-                    case 'added':
+                    case REMOVED:
                         $acc[] = "{$indent}{$added}{$key}: {$newValue}";
                         break;
-                    case 'changed':
+                    case ADDED:
                         $acc[] = "{$indent}{$added}{$key}: {$newValue}";
                         $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
                         break;
