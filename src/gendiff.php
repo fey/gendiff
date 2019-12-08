@@ -141,7 +141,7 @@ function stringifyDiff(array $diff): string
         '{',
         ...($result),
         '}',
-    ]);
+    ]) . PHP_EOL;
 }
 
 function makeIndent($level)
