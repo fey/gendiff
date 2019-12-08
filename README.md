@@ -8,4 +8,4 @@
 ## asciinema
 [![asciicast](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78.svg)](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78)
 
-Yaml parse - (https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn)[https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn]
+Yaml parse - [https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn](https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn)
