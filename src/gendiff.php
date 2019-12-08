@@ -20,10 +20,19 @@ function genDiff(string $filePath1, string $filePath2): string
 
 function calcDiff(array $data1, array $data2): array
 {
-    $keys = array_merge(array_keys($data1), array_keys($data2));
-    $diff = array_reduce($keys, function ($acc, $key) use ($data1, $data2) {
+    $keys = array_keys(array_merge($data1, $data2));
+
+    return array_map(function ($key) use ($data1, $data2) {
         $oldValue = $data1[$key] ?? null;
         $newValue = $data2[$key] ?? null;
+        $type = 'leaf';
+        if (is_array($oldValue) || is_array($newValue)) {
+            $type = 'tree';
+            $children = calcDiff(
+                $oldValue ?? $newValue,
+                $newValue ?? $oldValue
+            );
+        }
         if (array_key_exists($key, $data1) && !array_key_exists($key, $data2)) {
             $state = 'removed';
         }
@@ -37,18 +46,17 @@ function calcDiff(array $data1, array $data2): array
                 $state = 'changed';
             }
         }
-        $acc[$key] = [
-            'key'      => $key,
-            'state'    => $state,
+
+        return [
+            'key'       => $key,
+            'state'     => $state,
+            'type'      => $type,
             'oldValue' => $oldValue,
             'newValue' => $newValue,
+            'children'  => $children ?? null,
         ];
-        return $acc;
-    }, []);
-
-    return $diff;
+    }, $keys);
 }
-
 
 function parse($filePath)
 {
@@ -81,31 +89,37 @@ function stringifyDiff(array $diff): string
     $unchanged = '    ';
     $removed   = '  - ';
     $added     = '  + ';
+    var_dump($diff);
 
     $result = array_reduce($diff, function ($acc, $node) use ($unchanged, $removed, $added) {
-        ['state' => $state, 'newValue' => $newValue, 'oldValue' => $oldValue, 'key' => $key] = $node;
+        ['state' => $state, 'newValue' => $newValue, 'oldValue' => $oldValue, 'key' => $key, 'children' => $children] = $node;
         $oldValue = stringifyValue($oldValue);
         $newValue = stringifyValue($newValue);
 
-        switch ($state) {
-            case 'unchanged':
-                $acc[] = "{$unchanged}{$key}: {$oldValue}";
-                break;
-            case 'removed':
-                $acc[] = "{$removed}{$key}: {$oldValue}";
-                break;
-            case 'added':
-                $acc[] = "{$added}{$key}: {$newValue}";
-                break;
-            case 'changed':
-                $acc[] = "{$added}{$key}: {$newValue}";
-                $acc[] = "{$removed}{$key}: {$oldValue}";
-                break;
-            default:
-                break;
+        if ($children) {
+        } else {
+            switch ($state) {
+                case 'unchanged':
+                    $acc[] = "{$unchanged}{$key}: {$oldValue}";
+                    break;
+                case 'removed':
+                    $acc[] = "{$removed}{$key}: {$oldValue}";
+                    break;
+                case 'added':
+                    $acc[] = "{$added}{$key}: {$newValue}";
+                    break;
+                case 'changed':
+                    $acc[] = "{$added}{$key}: {$newValue}";
+                    $acc[] = "{$removed}{$key}: {$oldValue}";
+                    break;
+                default:
+                    break;
+            }
         }
+
         return $acc;
     }, []);
+
     return implode(PHP_EOL, ['{', ...($result), '}']);
 }
 
