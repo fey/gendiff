@@ -89,44 +89,70 @@ function stringifyDiff(array $diff): string
     $unchanged = '    ';
     $removed   = '  - ';
     $added     = '  + ';
-    var_dump($diff);
 
-    $result = array_reduce($diff, function ($acc, $node) use ($unchanged, $removed, $added) {
-        ['state' => $state, 'newValue' => $newValue, 'oldValue' => $oldValue, 'key' => $key, 'children' => $children] = $node;
-        $oldValue = stringifyValue($oldValue);
-        $newValue = stringifyValue($newValue);
-
-        if ($children) {
-        } else {
-            switch ($state) {
-                case 'unchanged':
-                    $acc[] = "{$unchanged}{$key}: {$oldValue}";
-                    break;
-                case 'removed':
-                    $acc[] = "{$removed}{$key}: {$oldValue}";
-                    break;
-                case 'added':
-                    $acc[] = "{$added}{$key}: {$newValue}";
-                    break;
-                case 'changed':
-                    $acc[] = "{$added}{$key}: {$newValue}";
-                    $acc[] = "{$removed}{$key}: {$oldValue}";
-                    break;
-                default:
-                    break;
+    $iter = function ($diff, $acc, $level) use (&$iter, $unchanged, $removed, $added) {
+        $indent = makeIndent($level);
+        foreach ($diff as $node) {
+            [
+                'state'    => $state,
+                'type'     => $type,
+                'newValue' => $newValue,
+                'oldValue' => $oldValue,
+                'key'      => $key,
+                'children' => $children
+            ] = $node;
+            if ($type === 'tree') {
+                $state = 'changed' === $state ? 'unchanged' : $state;
+                $acc[] = sprintf(
+                    '%s%s%s: {',
+                    $indent,
+                    $$state,
+                    $key
+                );
+                $acc[] = implode($indent . PHP_EOL, $iter($children, [], $level + 1));
+                $acc[] = $indent . $indent . '}';
+            } else {
+                $newValue = stringifyValue($newValue);
+                $oldValue = stringifyValue($oldValue);
+                switch ($state) {
+                    case 'unchanged':
+                        $acc[] = "{$indent}{$unchanged}{$key}: {$oldValue}";
+                        break;
+                    case 'removed':
+                        $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
+                        break;
+                    case 'added':
+                        $acc[] = "{$indent}{$added}{$key}: {$newValue}";
+                        break;
+                    case 'changed':
+                        $acc[] = "{$indent}{$added}{$key}: {$newValue}";
+                        $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         return $acc;
-    }, []);
+    };
+    $result = $iter($diff, [], 0);
 
-    return implode(PHP_EOL, ['{', ...($result), '}']);
+    return implode(PHP_EOL, [
+        '{',
+        ...($result),
+        '}',
+    ]);
 }
 
-
-function indentString($someString, ?int $level = 0): string
+function makeMultilineWithCurlyBraces($result, $level)
 {
-    return str_repeat('    ', $level) . $someString;
+
+}
+
+function makeIndent($level)
+{
+    return str_repeat('    ', $level);
 }
 
 function stringifyValue($value)
