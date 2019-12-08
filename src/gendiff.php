@@ -145,11 +145,6 @@ function stringifyDiff(array $diff): string
     ]);
 }
 
-function makeMultilineWithCurlyBraces($result, $level)
-{
-
-}
-
 function makeIndent($level)
 {
     return str_repeat('    ', $level);
