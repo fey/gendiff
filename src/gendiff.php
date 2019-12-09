@@ -50,6 +50,9 @@ function calcDiff(array $data1, array $data2): array
                 $state = 'unchanged';
             } else {
                 $state = 'changed';
+                if ($type === 'tree') {
+                    $state = CHANGED === $state ? UNCHANGED : $state;
+                }
             }
         }
 
@@ -110,13 +113,7 @@ function prettyDiff(array $diff): string
                 'children' => $children
             ] = $node;
             if ($type === 'tree') {
-                $state = CHANGED === $state ? UNCHANGED : $state;
-                $acc[] = sprintf(
-                    '%s%s%s: {',
-                    $indent,
-                    $$state,
-                    $key
-                );
+                $acc[] = sprintf('%s%s%s: {', $indent, $$state, $key);
                 $acc[] = implode($indent . PHP_EOL, $iter($children, [], $level + 1));
                 $acc[] = $makeIndent($level + 1) . '}';
             } else {
@@ -156,13 +153,39 @@ function prettyDiff(array $diff): string
 function plainDiff(array $diff): string
 {
     $messages = [
-        REMOVED => "Property '%s' was removed",
-        ADDED   => "Property '%s' was added with value: '%s'",
-        CHANGED => "Property '%s' was changed. From '%s' to '%s'",
+        REMOVED => function (array $node) {
+            return sprintf(
+                "Property '%s' was removed",
+                $node['key']
+            );
+        },
+        ADDED   => function (array $node) {
+            $node['newValue'] = $node['type'] === 'tree'
+            ? 'complex value'
+            : $node['newValue'];
+            return sprintf(
+                "Property '%s' was added with value: '%s'",
+                $node['key'],
+                $node['newValue']
+            );
+        },
+        CHANGED => function (array $node) {
+            $node['newValue'] = $node['type'] === 'tree'
+            ? 'complex value'
+            : $node['newValue'];
+            return sprintf(
+                "Property '%s' was changed. From '%s' to '%s'",
+                $node['key'],
+                $node['oldValue'],
+                $node['newValue']
+            );
+        },
+        UNCHANGED => function () {
+            return '';
+        },
     ];
 
     $result = [];
-
     foreach ($diff as $node) {
         [
             'state'    => $state,
@@ -172,10 +195,11 @@ function plainDiff(array $diff): string
             'key'      => $key,
         ] = $node;
 
-        if (array_key_exists($state, $messages)) {
-        }
+        $messageMaker = $messages[$state];
+        $result[] = $messageMaker($node);
     }
-    return '';
+
+    return implode(PHP_EOL, array_filter($result)) . PHP_EOL;
 }
 
 
