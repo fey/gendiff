@@ -37,11 +37,11 @@ function makeAstDiff(array $data1, array $data2): array
         return array_map(function ($key) use ($data1, $data2, $diffBuilder, $parent) {
             $oldValue = $data1[$key] ?? null;
             $newValue = $data2[$key] ?? null;
-            $state = 'unchanged';
+            $state = UNCHANGED;
             $children = null;
 
             if (array_key_exists($key, $data1) && !array_key_exists($key, $data2)) {
-                $state = 'removed';
+                $state = REMOVED;
                 if (is_array($oldValue)) {
                     $children = $oldValue = $diffBuilder(
                         [...$parent, $key],
@@ -51,7 +51,7 @@ function makeAstDiff(array $data1, array $data2): array
                 }
             }
             if (!array_key_exists($key, $data1) && array_key_exists($key, $data2)) {
-                $state = 'added';
+                $state = ADDED;
                 if (is_array($newValue)) {
                     $children = $newValue = $diffBuilder(
                         [...$parent, $key],
@@ -69,7 +69,7 @@ function makeAstDiff(array $data1, array $data2): array
                     $oldValue = null;
                     $newValue = null;
                 } elseif ($oldValue !== $newValue) {
-                    $state = 'changed';
+                    $state = CHANGED;
                 }
             }
 
@@ -206,8 +206,6 @@ function renderPlainDiff(array $diff): string
 
     return implode(PHP_EOL, $renderer($diff, [])) . PHP_EOL;
 }
-
-
 
 function stringifyIfBoolValue($value)
 {
