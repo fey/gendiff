@@ -1,0 +1,232 @@
+[
+    {
+        "key": "common",
+        "path": [
+            "common"
+        ],
+        "state": "unchanged",
+        "oldValue": null,
+        "newValue": null,
+        "children": [
+            {
+                "key": "setting1",
+                "path": [
+                    "common",
+                    "setting1"
+                ],
+                "state": "unchanged",
+                "oldValue": "Value 1",
+                "newValue": "Value 1",
+                "children": null
+            },
+            {
+                "key": "setting2",
+                "path": [
+                    "common",
+                    "setting2"
+                ],
+                "state": "removed",
+                "oldValue": "200",
+                "newValue": null,
+                "children": null
+            },
+            {
+                "key": "setting3",
+                "path": [
+                    "common",
+                    "setting3"
+                ],
+                "state": "unchanged",
+                "oldValue": true,
+                "newValue": true,
+                "children": null
+            },
+            {
+                "key": "setting6",
+                "path": [
+                    "common",
+                    "setting6"
+                ],
+                "state": "removed",
+                "oldValue": [
+                    {
+                        "key": "key",
+                        "path": [
+                            "common",
+                            "setting6",
+                            "key"
+                        ],
+                        "state": "unchanged",
+                        "oldValue": "value",
+                        "newValue": "value",
+                        "children": null
+                    }
+                ],
+                "newValue": null,
+                "children": [
+                    {
+                        "key": "key",
+                        "path": [
+                            "common",
+                            "setting6",
+                            "key"
+                        ],
+                        "state": "unchanged",
+                        "oldValue": "value",
+                        "newValue": "value",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "key": "setting4",
+                "path": [
+                    "common",
+                    "setting4"
+                ],
+                "state": "added",
+                "oldValue": null,
+                "newValue": "blah blah",
+                "children": null
+            },
+            {
+                "key": "setting5",
+                "path": [
+                    "common",
+                    "setting5"
+                ],
+                "state": "added",
+                "oldValue": null,
+                "newValue": [
+                    {
+                        "key": "key5",
+                        "path": [
+                            "common",
+                            "setting5",
+                            "key5"
+                        ],
+                        "state": "unchanged",
+                        "oldValue": "value5",
+                        "newValue": "value5",
+                        "children": null
+                    }
+                ],
+                "children": [
+                    {
+                        "key": "key5",
+                        "path": [
+                            "common",
+                            "setting5",
+                            "key5"
+                        ],
+                        "state": "unchanged",
+                        "oldValue": "value5",
+                        "newValue": "value5",
+                        "children": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "group1",
+        "path": [
+            "group1"
+        ],
+        "state": "unchanged",
+        "oldValue": null,
+        "newValue": null,
+        "children": [
+            {
+                "key": "baz",
+                "path": [
+                    "group1",
+                    "baz"
+                ],
+                "state": "changed",
+                "oldValue": "bas",
+                "newValue": "bars",
+                "children": null
+            },
+            {
+                "key": "foo",
+                "path": [
+                    "group1",
+                    "foo"
+                ],
+                "state": "unchanged",
+                "oldValue": "bar",
+                "newValue": "bar",
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "group2",
+        "path": [
+            "group2"
+        ],
+        "state": "removed",
+        "oldValue": [
+            {
+                "key": "abc",
+                "path": [
+                    "group2",
+                    "abc"
+                ],
+                "state": "unchanged",
+                "oldValue": "12345",
+                "newValue": "12345",
+                "children": null
+            }
+        ],
+        "newValue": null,
+        "children": [
+            {
+                "key": "abc",
+                "path": [
+                    "group2",
+                    "abc"
+                ],
+                "state": "unchanged",
+                "oldValue": "12345",
+                "newValue": "12345",
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "group3",
+        "path": [
+            "group3"
+        ],
+        "state": "added",
+        "oldValue": null,
+        "newValue": [
+            {
+                "key": "fee",
+                "path": [
+                    "group3",
+                    "fee"
+                ],
+                "state": "unchanged",
+                "oldValue": "100500",
+                "newValue": "100500",
+                "children": null
+            }
+        ],
+        "children": [
+            {
+                "key": "fee",
+                "path": [
+                    "group3",
+                    "fee"
+                ],
+                "state": "unchanged",
+                "oldValue": "100500",
+                "newValue": "100500",
+                "children": null
+            }
+        ]
+    }
+]

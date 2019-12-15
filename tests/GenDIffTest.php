@@ -9,37 +9,76 @@ use function fey\GenDiff\genDiff;
 
 class ParserTest extends TestCase
 {
-    public function testDiffJsonFlat()
+    public function testPrettyDiffJsonFlat()
     {
-        $diff = genDiff(__DIR__ . '/examples/flat/before.json', __DIR__ . '/examples/flat/after.json');
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/flat/before.json',
+            dirname(__DIR__) . '/examples/flat/after.json'
+        );
 
-        $this->assertStringEqualsFile(__DIR__ . '/examples/flat/diff.txt', $diff);
+        $this->assertStringEqualsFile(
+            dirname(__DIR__) . '/examples/flat/pretty_diff.txt',
+            $diff
+        );
     }
 
-    public function testDiffYamlFlat()
+    public function testPrettyDiffYamlFlat()
     {
-        $diff = genDiff(__DIR__ . '/examples/flat/before.json', __DIR__ . '/examples/flat/after.yml');
-        $this->assertStringEqualsFile(__DIR__ . '/examples/flat/diff.txt', $diff);
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/flat/before.json',
+            dirname(__DIR__) . '/examples/flat/after.yml'
+        );
+        $this->assertStringEqualsFile(dirname(__DIR__) . '/examples/flat/pretty_diff.txt', $diff);
     }
 
-    public function testDiffJsonNested()
+    public function testPrettyDiffNestedJson()
     {
-        $diff = genDiff(__DIR__ . '/examples/nested/before.json', __DIR__ . '/examples/nested/after.json');
-        $this->assertStringEqualsFile(__DIR__ . '/examples/nested/diff.txt', $diff);
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/nested/before.json',
+            dirname(__DIR__) . '/examples/nested/after.json'
+        );
+        $this->assertStringEqualsFile(
+            dirname(__DIR__) . '/examples/nested/pretty_diff.txt',
+            $diff
+        );
     }
 
-    public function testPlainDiff()
+    public function testPlainDiffNested()
     {
-        $diff = genDiff(__DIR__ . '/examples/nested/before.json', __DIR__ . '/examples/nested/after.json', 'plain');
-        $this->assertEquals(<<<DIFF
-Property 'common.setting2' was removed
-Property 'common.setting6' was removed
-Property 'common.setting4' was added with value: 'blah blah'
-Property 'common.setting5' was added with value: 'complex value'
-Property 'group1.baz' was changed. From 'bas' to 'bars'
-Property 'group2' was removed
-Property 'group3' was added with value: 'complex value'
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/nested/before.json',
+            dirname(__DIR__) . '/examples/nested/after.json',
+            'plain'
+        );
+        $this->assertStringEqualsFile(
+            dirname(__DIR__) . '/examples/flat/plain_diff.txt',
+            $diff
+        );
+    }
 
-DIFF, $diff);
+    public function testJsonDiffFlat()
+    {
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/flat/before.json',
+            dirname(__DIR__) . '/examples/flat/after.json',
+            'json'
+        );
+        $this->assertStringEqualsFile(
+            dirname(__DIR__) . '/examples/flat/diff.json',
+            $diff
+        );
+    }
+
+    public function testJsonDiffNested()
+    {
+        $diff = genDiff(
+            dirname(__DIR__) . '/examples/nested/before.json',
+            dirname(__DIR__) . '/examples/nested/after.json',
+            'json'
+        );
+        $this->assertStringEqualsFile(
+            dirname(__DIR__) . '/examples/nested/diff.json',
+            $diff
+        );
     }
 }
