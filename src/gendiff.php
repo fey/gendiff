@@ -19,13 +19,16 @@ function genDiff(string $filePath1, string $filePath2, $format = 'pretty'): stri
     switch ($format) {
         case 'plain':
             return plainDiff($diff);
+        case 'json':
+            return jsonDiff($diff);
         default:
             return prettyDiff($diff);
     }
 }
 
-function isRemoved($key, $array1, $array2)
+function jsonDiff($diff): string
 {
+    return json_encode($diff, JSON_PRETTY_PRINT) . PHP_EOL;
 }
 
 function calcDiff(array $data1, array $data2): array
