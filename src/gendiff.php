@@ -13,25 +13,23 @@ function genDiff(string $filePath1, string $filePath2, $format = 'pretty'): stri
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
-
-    $diff = calcDiff($data1, $data2);
-
+    $diff = makeAstDiff($data1, $data2);
     switch ($format) {
         case 'plain':
-            return plainDiff($diff);
+            return renderPlainDiff($diff);
         case 'json':
-            return jsonDiff($diff);
+            return renderJsonDiff($diff);
         default:
-            return prettyDiff($diff);
+            return renderPrettyDiff($diff);
     }
 }
 
-function jsonDiff($diff): string
+function renderJsonDiff($diff): string
 {
     return json_encode($diff, JSON_PRETTY_PRINT) . PHP_EOL;
 }
 
-function calcDiff(array $data1, array $data2): array
+function makeAstDiff(array $data1, array $data2): array
 {
     $diffBuilder = function ($parent, $data1, $data2) use (&$diffBuilder) {
         $keys = array_keys(array_merge($data1, $data2));
@@ -92,40 +90,30 @@ function calcDiff(array $data1, array $data2): array
 function parse($filePath)
 {
     $fileContent = file_get_contents($filePath);
-
     switch (pathinfo($filePath, PATHINFO_EXTENSION)) {
         case 'yaml':
         case 'yml':
-            return parseYaml($fileContent);
+            return Yaml::parse($fileContent, Yaml::DUMP_OBJECT_AS_MAP);
         case 'json':
-            return parseJson($fileContent);
+            return json_decode($fileContent, true);
         default:
             return;
     }
 }
 
-function parseJson(string $data)
+function renderPrettyDiff(array $diff): string
 {
-    return json_decode($data, true);
-}
 
-function parseYaml(string $data)
-{
-    return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
-}
 
-function prettyDiff(array $diff): string
-{
-    $unchanged = '    ';
-    $removed   = '  - ';
-    $added     = '  + ';
-    $makeIndent = function ($level) {
-        return str_repeat('    ', $level);
-    };
-    $diffBuilder = function ($diff, $level) use (&$diffBuilder, $unchanged, $removed, $added, $makeIndent) {
-        $indent = $makeIndent($level);
-        $acc = [];
-        foreach ($diff as $node) {
+    $diffBuilder = function ($diff, $level) use (&$diffBuilder) {
+        return array_map(function ($node) use ($level, $diffBuilder) {
+            $markUnchanged = '    ';
+            $markRemoved   = '  - ';
+            $markAdded     = '  + ';
+            $makeIndent = function ($level) {
+                return str_repeat('    ', $level);
+            };
+            $indent = $makeIndent($level);
             [
                 'state'    => $state,
                 'newValue' => $newValue,
@@ -133,8 +121,8 @@ function prettyDiff(array $diff): string
                 'key'      => $key,
                 'children' => $children
             ] = $node;
-            $newValue = stringifyValue($newValue);
-            $oldValue = stringifyValue($oldValue);
+            $newValue = stringifyIfBoolValue($newValue);
+            $oldValue = stringifyIfBoolValue($oldValue);
             if ($children) {
                 $oldValue = $newValue = implode(PHP_EOL, [
                     '{',
@@ -144,24 +132,20 @@ function prettyDiff(array $diff): string
             }
             switch ($state) {
                 case UNCHANGED:
-                    $acc[] = "{$indent}{$unchanged}{$key}: {$oldValue}";
-                    break;
+                    return "{$indent}{$markUnchanged}{$key}: {$oldValue}";
                 case REMOVED:
-                    $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
-                    break;
+                    return "{$indent}{$markRemoved}{$key}: {$oldValue}";
                 case ADDED:
-                    $acc[] = "{$indent}{$added}{$key}: {$newValue}";
-                    break;
+                    return "{$indent}{$markAdded}{$key}: {$newValue}";
                 case CHANGED:
-                    $acc[] = "{$indent}{$added}{$key}: {$newValue}";
-                    $acc[] = "{$indent}{$removed}{$key}: {$oldValue}";
-                    break;
+                    return implode(PHP_EOL, [
+                        "{$indent}{$markAdded}{$key}: {$newValue}",
+                        "{$indent}{$markRemoved}{$key}: {$oldValue}"
+                    ]);
                 default:
-                    break;
+                    return;
             }
-        }
-
-        return $acc;
+        }, $diff);
     };
     $result = $diffBuilder($diff, 0);
 
@@ -172,63 +156,38 @@ function prettyDiff(array $diff): string
     ]) . PHP_EOL;
 }
 
-function plainDiff(array $diff): string
+function renderPlainDiff(array $diff): string
 {
-    $messages = [
-        REMOVED => function (array $node) {
-            return sprintf(
-                "Property '%s' was removed",
-                implode('path', $node['path'])
-            );
-        },
-        ADDED   => function (array $node) {
-            $node['newValue'] = $node['children']
-            ? 'complex value'
-            : $node['newValue'];
-            return sprintf(
-                "Property '%s' was added with value: '%s'",
-                implode('path', $node['path']),
-                $node['newValue']
-            );
-        },
-        CHANGED => function (array $node) {
-            $node['newValue'] = $node['children']
-            ? 'complex value'
-            : $node['newValue'];
-            return sprintf(
-                "Property '%s' was changed. From '%s' to '%s'",
-                implode('path', $node['path']),
-                $node['oldValue'],
-                $node['newValue']
-            );
-        },
-        UNCHANGED => function () {
-            return '';
-        },
-    ];
-
-    $differ = function ($nodes, $acc) use (&$differ) {
-        return array_reduce($nodes, function ($acc, $node) use ($differ) {
-            $fullPath = implode('.', $node['path']);
-            switch ($node['state']) {
+    $renderer = function ($nodes, $acc) use (&$renderer) {
+        return array_reduce($nodes, function ($acc, $node) use ($renderer) {
+            [
+                'state'    => $state,
+                'path'     => $path,
+                'newValue' => $newValue,
+                'oldValue' => $oldValue,
+                'key'      => $key,
+                'children' => $children
+            ] = $node;
+            $fullPath = implode('.', $path);
+            switch ($state) {
                 case CHANGED:
                     $acc[] = sprintf(
                         "Property '%s' was changed. From '%s' to '%s'",
                         $fullPath,
-                        $node['oldValue'],
-                        $node['newValue']
+                        stringifyIfBoolValue($oldValue),
+                        stringifyIfBoolValue($newValue)
                     );
                     break;
                 case UNCHANGED:
-                    if ($node['children']) {
-                        return $differ($node['children'], $acc);
+                    if ($children) {
+                        return $renderer($children, $acc);
                     }
                     break;
                 case ADDED:
                     $acc[] = sprintf(
                         "Property '%s' was added with value: '%s'",
                         $fullPath,
-                        $node['children'] ? 'complex value' : $node['newValue']
+                        $children ? 'complex value' : stringifyIfBoolValue($newValue)
                     );
                     break;
                 case REMOVED:
@@ -245,12 +204,12 @@ function plainDiff(array $diff): string
         }, $acc);
     };
 
-    return implode(PHP_EOL, $differ($diff, [])) . PHP_EOL;
+    return implode(PHP_EOL, $renderer($diff, [])) . PHP_EOL;
 }
 
 
 
-function stringifyValue($value)
+function stringifyIfBoolValue($value)
 {
     if (is_bool($value)) {
         $val = $value ? 'true' : 'false';
