@@ -21,3 +21,5 @@
 Yaml parse - [https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn](https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn)
 
 Diff nested JSON - [https://asciinema.org/a/J5LRp7UsTFSlv5K9hj9PqwQvb](https://asciinema.org/a/J5LRp7UsTFSlv5K9hj9PqwQvb)
+
+Diff plain output = [https://asciinema.org/a/QNixqqZTgb3ZLdxTscqhttHMv](https://asciinema.org/a/QNixqqZTgb3ZLdxTscqhttHMv)
