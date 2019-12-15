@@ -16,7 +16,7 @@
 
 ## asciinema
 
-(step 2) [![asciicast](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78.svg)](https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78)
+(step 2) (https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78)(https://asciinema.org/a/oMNO3dE79La73DKsWGPh7MU78)
 
 Yaml parse (step 3)- [https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn](https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn)
 
