@@ -25,7 +25,7 @@ class ParserTest extends TestCase
     public function testPrettyDiffYamlFlat()
     {
         $diff = genDiff(
-            dirname(__DIR__) . '/examples/flat/before.json',
+            dirname(__DIR__) . '/examples/flat/before.yml',
             dirname(__DIR__) . '/examples/flat/after.yml'
         );
         $this->assertStringEqualsFile(dirname(__DIR__) . '/examples/flat/pretty_diff.txt', $diff);
