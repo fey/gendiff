@@ -23,3 +23,5 @@ Yaml parse (step 3)- [https://asciinema.org/a/hDzbTZ5o36fM9yAI0IttFyYqn](https:/
 Diff nested JSON (step 4)- [https://asciinema.org/a/J5LRp7UsTFSlv5K9hj9PqwQvb](https://asciinema.org/a/J5LRp7UsTFSlv5K9hj9PqwQvb)
 
 Diff plain output (step 5) [https://asciinema.org/a/QNixqqZTgb3ZLdxTscqhttHMv](https://asciinema.org/a/QNixqqZTgb3ZLdxTscqhttHMv)
+
+Diff json output (step 6) [https://asciinema.org/a/lbejw5hQj0gC32RdJ4dJ7N5Af](https://asciinema.org/a/lbejw5hQj0gC32RdJ4dJ7N5Af)
