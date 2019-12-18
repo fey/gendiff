@@ -24,11 +24,11 @@ function genDiff(string $filePath1, string $filePath2, $formatterName = DEFAULT_
     $data2 = parse($filePath2);
     $diff = makeAstDiff($data1, $data2);
 
-    if (array_key_exists($formatterName, FORMATTERS) && function_exists(FORMATTERS[$formatterName])) {
-        return FORMATTERS[$formatterName]($diff);
-    } else {
-        return FORMATTERS[DEFAULT_FORMATTER]($diff);
-    }
+    $isExistsFormatter = array_key_exists($formatterName, FORMATTERS) && function_exists(FORMATTERS[$formatterName]);
+
+    return $isExistsFormatter
+        ? FORMATTERS[$formatterName]($diff)
+        : FORMATTERS[DEFAULT_FORMATTER]($diff);
 }
 
 function makeAstDiff(array $data1, array $data2): array
