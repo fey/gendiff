@@ -11,19 +11,23 @@ const CHANGED   = 'changed';
 const UNCHANGED = 'unchanged';
 const REMOVED   = 'removed';
 const ADDED     = 'added';
+const FORMATTERS = [
+    'plain'  => 'GenDiff\Formatters\Plain\format',
+    'json'   => 'GenDiff\Formatters\Json\format',
+    'pretty' => 'GenDiff\Formatters\Pretty\format',
+];
+const DEFAULT_PARSER = 'pretty';
 
-function genDiff(string $filePath1, string $filePath2, $format = 'pretty'): string
+function genDiff(string $filePath1, string $filePath2, $format = DEFAULT_PARSER): string
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
     $diff = makeAstDiff($data1, $data2);
-    switch ($format) {
-        case 'plain':
-            return formatPlain($diff);
-        case 'json':
-            return formatJson($diff);
-        default:
-            return formatPretty($diff);
+
+    if (array_key_exists($format, FORMATTERS) && function_exists(FORMATTERS[$format])) {
+        return FORMATTERS[$format]($diff);
+    } else {
+        return FORMATTERS[DEFAULT_PARSER]($diff);
     }
 }
 
