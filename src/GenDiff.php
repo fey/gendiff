@@ -16,18 +16,18 @@ const FORMATTERS = [
     'json'   => 'GenDiff\Formatters\Json\format',
     'pretty' => 'GenDiff\Formatters\Pretty\format',
 ];
-const DEFAULT_PARSER = 'pretty';
+const DEFAULT_FORMATTER = 'pretty';
 
-function genDiff(string $filePath1, string $filePath2, $format = DEFAULT_PARSER): string
+function genDiff(string $filePath1, string $filePath2, $formatterName = DEFAULT_FORMATTER): string
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
     $diff = makeAstDiff($data1, $data2);
 
-    if (array_key_exists($format, FORMATTERS) && function_exists(FORMATTERS[$format])) {
-        return FORMATTERS[$format]($diff);
+    if (array_key_exists($formatterName, FORMATTERS) && function_exists(FORMATTERS[$formatterName])) {
+        return FORMATTERS[$formatterName]($diff);
     } else {
-        return FORMATTERS[DEFAULT_PARSER]($diff);
+        return FORMATTERS[DEFAULT_FORMATTER]($diff);
     }
 }
 
