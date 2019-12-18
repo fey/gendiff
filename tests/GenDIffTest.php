@@ -36,6 +36,6 @@ class ParserTest extends TestCase
 
     private function getFixturesDirectoryPath(): string
     {
-        return dirname(__DIR__) . '/fixtures/';
+        return __DIR__ . '/fixtures/';
     }
 }
