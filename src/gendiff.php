@@ -1,6 +1,6 @@
 <?php
 
-namespace fey\GenDiff;
+namespace GenDiff;
 
 use Symfony\Component\Yaml\Yaml;
 

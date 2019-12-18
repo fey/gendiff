@@ -1,84 +1,41 @@
 <?php
 
-namespace fey\GenDiff\Tests;
+namespace GenDiff\Tests;
 
-use PHP_CodeSniffer\Reports\Diff;
 use PHPUnit\Framework\TestCase;
 
-use function fey\GenDiff\genDiff;
+use function GenDiff\genDiff;
 
 class ParserTest extends TestCase
 {
-    public function testPrettyDiffJsonFlat()
+    /**
+     * @dataProvider data
+     */
+    public function testGenDiff($expected, $format)
     {
         $diff = genDiff(
-            dirname(__DIR__) . '/examples/flat/before.json',
-            dirname(__DIR__) . '/examples/flat/after.json'
+            $this->getFixturesDirectoryPath() . '/before.json',
+            $this->getFixturesDirectoryPath() . '/after.json',
+            $format
         );
-
         $this->assertStringEqualsFile(
-            dirname(__DIR__) . '/examples/flat/pretty_diff.txt',
+            $this->getFixturesDirectoryPath() . $expected,
             $diff
         );
     }
 
-    public function testPrettyDiffYamlFlat()
+    public function data()
     {
-        $diff = genDiff(
-            dirname(__DIR__) . '/examples/flat/before.yml',
-            dirname(__DIR__) . '/examples/flat/after.yml'
-        );
-        $this->assertStringEqualsFile(dirname(__DIR__) . '/examples/flat/pretty_diff.txt', $diff);
+        return [
+            ['pretty_diff.txt', 'pretty'],
+            ['pretty_diff.txt', null],
+            ['plain_diff.txt', 'plain' ],
+            ['diff.json', 'json' ],
+        ];
     }
 
-    public function testPrettyDiffNestedJson()
+    private function getFixturesDirectoryPath(): string
     {
-        $diff = genDiff(
-            dirname(__DIR__) . '/examples/nested/before.json',
-            dirname(__DIR__) . '/examples/nested/after.json'
-        );
-        $this->assertStringEqualsFile(
-            dirname(__DIR__) . '/examples/nested/pretty_diff.txt',
-            $diff
-        );
-    }
-
-    public function testPlainDiffNested()
-    {
-        $diff = genDiff(
-            dirname(__DIR__) . '/examples/nested/before.json',
-            dirname(__DIR__) . '/examples/nested/after.json',
-            'plain'
-        );
-        $this->assertStringEqualsFile(
-            dirname(__DIR__) . '/examples/flat/plain_diff.txt',
-            $diff
-        );
-    }
-
-    public function testJsonDiffFlat()
-    {
-        $diff = genDiff(
-            dirname(__DIR__) . '/examples/flat/before.json',
-            dirname(__DIR__) . '/examples/flat/after.json',
-            'json'
-        );
-        $this->assertStringEqualsFile(
-            dirname(__DIR__) . '/examples/flat/diff.json',
-            $diff
-        );
-    }
-
-    public function testJsonDiffNested()
-    {
-        $diff = genDiff(
-            dirname(__DIR__) . '/examples/nested/before.json',
-            dirname(__DIR__) . '/examples/nested/after.json',
-            'json'
-        );
-        $this->assertStringEqualsFile(
-            dirname(__DIR__) . '/examples/nested/diff.json',
-            $diff
-        );
+        return dirname(__DIR__) . '/fixtures/';
     }
 }

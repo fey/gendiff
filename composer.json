@@ -11,7 +11,7 @@
             "src/gendiff.php"
         ],
         "psr-4": {
-            "fey\\GenDiff\\Tests\\": "tests"
+            "GenDiff\\Tests\\": "tests"
         }
     },
     "bin": [
