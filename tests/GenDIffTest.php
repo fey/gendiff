@@ -27,10 +27,10 @@ class ParserTest extends TestCase
     public function data()
     {
         return [
-            ['pretty_diff.txt', 'pretty'],
-            ['pretty_diff.txt', null],
-            ['plain_diff.txt', 'plain' ],
-            ['diff.json', 'json' ],
+            'without params'              => ['pretty_diff.txt', null],
+            'with pertty formatter param' => ['pretty_diff.txt', 'pretty'],
+            'plain formatter'             => ['plain_diff.txt', 'plain' ],
+            'json formatter'              => ['diff.json', 'json' ],
         ];
     }
 
