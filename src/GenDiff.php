@@ -52,7 +52,8 @@ function makeAstDiff(array $data1, array $data2): array
                 if (is_array($newValue)) {
                     $children = $diffBuilder($nodePath, $newValue, $newValue);
                 }
-            } elseif (array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
+            }
+            if (array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
                 if (is_array($oldValue) && is_array($newValue)) {
                     $children = $diffBuilder($nodePath, $oldValue, $newValue);
                 } elseif ($oldValue !== $newValue) {
