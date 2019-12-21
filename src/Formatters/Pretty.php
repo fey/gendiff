@@ -11,8 +11,8 @@ use const GenDiff\ADDED;
 
 function format(array $diff): string
 {
-    $diffBuilder = function ($diff, $level) use (&$diffBuilder) {
-        return array_map(function ($node) use ($level, $diffBuilder) {
+    $formatter = function ($diff, $level) use (&$formatter) {
+        return array_map(function ($node) use ($level, $formatter) {
             $markUnchanged = '    ';
             $markRemoved   = '  - ';
             $markAdded     = '  + ';
@@ -31,7 +31,7 @@ function format(array $diff): string
             $stringifyOldValue = stringifyIfBoolValue($oldValue);
             $stringifyChildren = empty($children) ? '' : implode(PHP_EOL, [
                 '{',
-                ...$diffBuilder($children, $level + 1),
+                ...$formatter($children, $level + 1),
                 $makeIndent($level + 1) . '}'
             ]);
             $diffMessages = [
@@ -49,7 +49,7 @@ function format(array $diff): string
             return $diffMessages[$state]();
         }, $diff);
     };
-    $result = $diffBuilder($diff, 0);
+    $result = $formatter($diff, 0);
 
     return implode(PHP_EOL, [
         '{',
