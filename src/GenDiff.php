@@ -53,7 +53,7 @@ function makeAstDiff(array $data1, array $data2): array
                     $children = $diffBuilder($nodePath, $newValue, $newValue);
                 }
             }
-            if (array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
+            if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
                 if (is_array($oldValue) && is_array($newValue)) {
                     $children = $diffBuilder($nodePath, $oldValue, $newValue);
                 } elseif ($oldValue !== $newValue) {
