@@ -24,33 +24,29 @@ function format(array $diff): string
                 'state'    => $state,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
-                'key'      => $key,
+                'name'     => $nodeName,
                 'children' => $children
             ] = $node;
-            $newValue = stringifyIfBoolValue($newValue);
-            $oldValue = stringifyIfBoolValue($oldValue);
-            if ($children) {
-                $oldValue = $newValue = implode(PHP_EOL, [
-                    '{',
-                    ...$diffBuilder($children, $level + 1),
-                    $makeIndent($level + 1) . '}'
-                ]);
-            }
-            switch ($state) {
-                case UNCHANGED:
-                    return "{$indent}{$markUnchanged}{$key}: {$oldValue}";
-                case REMOVED:
-                    return "{$indent}{$markRemoved}{$key}: {$oldValue}";
-                case ADDED:
-                    return "{$indent}{$markAdded}{$key}: {$newValue}";
-                case CHANGED:
-                    return implode(PHP_EOL, [
-                        "{$indent}{$markAdded}{$key}: {$newValue}",
-                        "{$indent}{$markRemoved}{$key}: {$oldValue}"
-                    ]);
-                default:
-                    return;
-            }
+            $stringifyNewValue = stringifyIfBoolValue($newValue);
+            $stringifyOldValue = stringifyIfBoolValue($oldValue);
+            $stringifyChildren = empty($children) ? '' : implode(PHP_EOL, [
+                '{',
+                ...$diffBuilder($children, $level + 1),
+                $makeIndent($level + 1) . '}'
+            ]);
+            $diffMessages = [
+                UNCHANGED   => fn() => "{$indent}{$markUnchanged}{$nodeName}: "
+                    . ($stringifyChildren ?: $stringifyOldValue),
+                REMOVED     => fn() => "{$indent}{$markRemoved}{$nodeName}: "
+                    . ($stringifyChildren ?: $stringifyOldValue),
+                ADDED       => fn() => "{$indent}{$markAdded}{$nodeName}: "
+                    . ($stringifyChildren ?: $stringifyNewValue),
+                CHANGED     => fn() => implode(PHP_EOL, [
+                    "{$indent}{$markAdded}{$nodeName}: {$stringifyNewValue}",
+                    "{$indent}{$markRemoved}{$nodeName}: {$stringifyOldValue}"
+                ]),
+            ];
+            return $diffMessages[$state]();
         }, $diff);
     };
     $result = $diffBuilder($diff, 0);

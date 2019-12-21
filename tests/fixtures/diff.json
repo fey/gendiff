@@ -1,15 +1,29 @@
 [
     {
-        "key": "common",
+        "name": "common",
         "path": [
             "common"
         ],
         "state": "unchanged",
-        "oldValue": null,
-        "newValue": null,
+        "oldValue": {
+            "setting1": "Value 1",
+            "setting2": "200",
+            "setting3": true,
+            "setting6": {
+                "key": "value"
+            }
+        },
+        "newValue": {
+            "setting1": "Value 1",
+            "setting3": true,
+            "setting4": "blah blah",
+            "setting5": {
+                "key5": "value5"
+            }
+        },
         "children": [
             {
-                "key": "setting1",
+                "name": "setting1",
                 "path": [
                     "common",
                     "setting1"
@@ -20,7 +34,7 @@
                 "children": null
             },
             {
-                "key": "setting2",
+                "name": "setting2",
                 "path": [
                     "common",
                     "setting2"
@@ -31,7 +45,7 @@
                 "children": null
             },
             {
-                "key": "setting3",
+                "name": "setting3",
                 "path": [
                     "common",
                     "setting3"
@@ -42,30 +56,19 @@
                 "children": null
             },
             {
-                "key": "setting6",
+                "name": "setting6",
                 "path": [
                     "common",
                     "setting6"
                 ],
                 "state": "removed",
-                "oldValue": [
-                    {
-                        "key": "key",
-                        "path": [
-                            "common",
-                            "setting6",
-                            "key"
-                        ],
-                        "state": "unchanged",
-                        "oldValue": "value",
-                        "newValue": "value",
-                        "children": null
-                    }
-                ],
+                "oldValue": {
+                    "key": "value"
+                },
                 "newValue": null,
                 "children": [
                     {
-                        "key": "key",
+                        "name": "key",
                         "path": [
                             "common",
                             "setting6",
@@ -79,7 +82,7 @@
                 ]
             },
             {
-                "key": "setting4",
+                "name": "setting4",
                 "path": [
                     "common",
                     "setting4"
@@ -90,30 +93,19 @@
                 "children": null
             },
             {
-                "key": "setting5",
+                "name": "setting5",
                 "path": [
                     "common",
                     "setting5"
                 ],
                 "state": "added",
                 "oldValue": null,
-                "newValue": [
-                    {
-                        "key": "key5",
-                        "path": [
-                            "common",
-                            "setting5",
-                            "key5"
-                        ],
-                        "state": "unchanged",
-                        "oldValue": "value5",
-                        "newValue": "value5",
-                        "children": null
-                    }
-                ],
+                "newValue": {
+                    "key5": "value5"
+                },
                 "children": [
                     {
-                        "key": "key5",
+                        "name": "key5",
                         "path": [
                             "common",
                             "setting5",
@@ -129,16 +121,22 @@
         ]
     },
     {
-        "key": "group1",
+        "name": "group1",
         "path": [
             "group1"
         ],
         "state": "unchanged",
-        "oldValue": null,
-        "newValue": null,
+        "oldValue": {
+            "baz": "bas",
+            "foo": "bar"
+        },
+        "newValue": {
+            "foo": "bar",
+            "baz": "bars"
+        },
         "children": [
             {
-                "key": "baz",
+                "name": "baz",
                 "path": [
                     "group1",
                     "baz"
@@ -149,7 +147,7 @@
                 "children": null
             },
             {
-                "key": "foo",
+                "name": "foo",
                 "path": [
                     "group1",
                     "foo"
@@ -162,28 +160,18 @@
         ]
     },
     {
-        "key": "group2",
+        "name": "group2",
         "path": [
             "group2"
         ],
         "state": "removed",
-        "oldValue": [
-            {
-                "key": "abc",
-                "path": [
-                    "group2",
-                    "abc"
-                ],
-                "state": "unchanged",
-                "oldValue": "12345",
-                "newValue": "12345",
-                "children": null
-            }
-        ],
+        "oldValue": {
+            "abc": "12345"
+        },
         "newValue": null,
         "children": [
             {
-                "key": "abc",
+                "name": "abc",
                 "path": [
                     "group2",
                     "abc"
@@ -196,28 +184,18 @@
         ]
     },
     {
-        "key": "group3",
+        "name": "group3",
         "path": [
             "group3"
         ],
         "state": "added",
         "oldValue": null,
-        "newValue": [
-            {
-                "key": "fee",
-                "path": [
-                    "group3",
-                    "fee"
-                ],
-                "state": "unchanged",
-                "oldValue": "100500",
-                "newValue": "100500",
-                "children": null
-            }
-        ],
+        "newValue": {
+            "fee": "100500"
+        },
         "children": [
             {
-                "key": "fee",
+                "name": "fee",
                 "path": [
                     "group3",
                     "fee"

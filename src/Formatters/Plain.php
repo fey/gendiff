@@ -18,7 +18,6 @@ function format(array $diff): string
                 'path'     => $path,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
-                'key'      => $key,
                 'children' => $children
             ] = $node;
             $fullPath = implode('.', $path);
