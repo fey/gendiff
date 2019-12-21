@@ -5,6 +5,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/fey/gendiff/v/unstable)](https://packagist.org/packages/fey/gendiff)
 
 #
+
 ## prerequisites
 
 * PHP 7.4
@@ -13,6 +14,20 @@
 ## installation
 
 `composer g require fey/gendiff dev-master`
+
+## usage
+
+```sh
+Generate diff
+
+Usage:
+  gendiff (-h|--help)
+  gendiff [--format <fmt>] <firstFile> <secondFile>
+
+Options:
+  -h --help                     Show this screen
+  --format <fmt>                Report format [default: pretty]
+```
 
 ## asciinema
 

@@ -21,7 +21,7 @@ Usage:
 
 Options:
   -h --help                     Show this screen
-  --format <fmt>                Report format [default: pretty]
+  --format <fmt>                Report format [default: pretty] Examples: pretty, plain, json
 
 DOC;
 
