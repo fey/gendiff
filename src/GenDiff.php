@@ -8,25 +8,33 @@ const CHANGED   = 'changed';
 const UNCHANGED = 'unchanged';
 const REMOVED   = 'removed';
 const ADDED     = 'added';
+const DEFAULT_FORMATTER = 'pretty';
 const FORMATTERS = [
     'plain'  => 'GenDiff\Formatters\Plain\format',
     'json'   => 'GenDiff\Formatters\Json\format',
     'pretty' => 'GenDiff\Formatters\Pretty\format',
 ];
-const DEFAULT_FORMATTER = 'pretty';
+const PARSERS = [
+    'yaml' => 'GenDiff\Parsers\parseYaml',
+    'yml'  => 'GenDiff\Parsers\parseYaml',
+    'json' => 'GenDiff\Parsers\parseJson',
+];
 
-function genDiff(string $filePath1, string $filePath2, $formatterName = DEFAULT_FORMATTER): string
+
+function genDiff(string $filePath1, string $filePath2, ?string $formatterName): string
 {
-    $data1 = parse($filePath1);
-    $data2 = parse($filePath2);
+    $data1 = parse(
+        file_get_contents($filePath1),
+        getParserForExtension(getFileExtension($filePath1))
+    );
+    $data2 = parse(
+        file_get_contents($filePath2),
+        getParserForExtension(getFileExtension($filePath2))
+    );
     $diff = makeAstDiff($data1, $data2);
+    $formatDiff = getFormatter($formatterName);
 
-    $isExistsFormatter = array_key_exists($formatterName, FORMATTERS) && function_exists(FORMATTERS[$formatterName]);
-
-    if ($isExistsFormatter) {
-        return FORMATTERS[$formatterName]($diff);
-    }
-    return FORMATTERS[DEFAULT_FORMATTER]($diff);
+    return $formatDiff($diff);
 }
 
 function makeAstDiff(array $data1, array $data2): array
@@ -73,4 +81,20 @@ function makeAstDiff(array $data1, array $data2): array
     };
 
     return $diffBuilder([], $data1, $data2);
+}
+
+function getFileExtension(string $filePath): string
+{
+    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+    return $extension;
+}
+
+function getParserForExtension($extension)
+{
+    return PARSERS[$extension];
+}
+
+function getFormatter($name)
+{
+    return FORMATTERS[$name ?? DEFAULT_FORMATTER];
 }

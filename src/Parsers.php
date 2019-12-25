@@ -4,17 +4,8 @@ namespace GenDiff\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-const PARSERS = [
-    'yaml' => __NAMESPACE__ . '\parseYaml',
-    'yml'  => __NAMESPACE__ . '\parseYaml',
-    'json' => __NAMESPACE__ . '\parseJson',
-];
-function parse($filePath)
+function parse($fileContent, $parser)
 {
-    $fileContent = file_get_contents($filePath);
-    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-    $parser = PARSERS[$extension];
-
     return $parser($fileContent);
 }
 
