@@ -31,11 +31,10 @@ function genDiff(string $filePath1, string $filePath2, $formatterName = DEFAULT_
 
 function makeAstDiff(array $data1, array $data2): array
 {
-    $diffBuilder = function ($parentPath, $data1, $data2) use (&$diffBuilder) {
+    $diffBuilder = function ($data1, $data2) use (&$diffBuilder) {
         $nodesNames = array_keys(array_merge($data1, $data2));
 
-        return array_map(function ($nodeName) use ($data1, $data2, $diffBuilder, $parentPath) {
-            $nodePath = [...$parentPath, $nodeName];
+        return array_map(function ($nodeName) use ($data1, $data2, $diffBuilder) {
             $oldValue = $data1[$nodeName] ?? null;
             $newValue = $data2[$nodeName] ?? null;
             $state = UNCHANGED;
@@ -44,18 +43,18 @@ function makeAstDiff(array $data1, array $data2): array
             if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
                 $state = REMOVED;
                 if (is_array($oldValue)) {
-                    $children = $diffBuilder($nodePath, $oldValue, $oldValue);
+                    $children = $diffBuilder($oldValue, $oldValue);
                 }
             }
             if (!array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
                 $state = ADDED;
                 if (is_array($newValue)) {
-                    $children = $diffBuilder($nodePath, $newValue, $newValue);
+                    $children = $diffBuilder($newValue, $newValue);
                 }
             }
-            if (array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
+            if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
                 if (is_array($oldValue) && is_array($newValue)) {
-                    $children = $diffBuilder($nodePath, $oldValue, $newValue);
+                    $children = $diffBuilder($oldValue, $newValue);
                 } elseif ($oldValue !== $newValue) {
                     $state = CHANGED;
                 }
@@ -63,7 +62,6 @@ function makeAstDiff(array $data1, array $data2): array
 
             return [
                 'name'     => $nodeName,
-                'path'     => $nodePath,
                 'state'    => $state,
                 'oldValue' => $oldValue,
                 'newValue' => $newValue,
@@ -72,5 +70,5 @@ function makeAstDiff(array $data1, array $data2): array
         }, $nodesNames);
     };
 
-    return $diffBuilder([], $data1, $data2);
+    return $diffBuilder($data1, $data2);
 }

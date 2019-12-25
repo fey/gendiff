@@ -12,19 +12,19 @@ use const GenDiff\ADDED;
 
 function format(array $diff): string
 {
-    $renderer = function ($nodes) use (&$renderer) {
-        return array_map(function ($node) use ($renderer) {
+    $renderer = function ($nodes, $nodePath) use (&$renderer) {
+        return array_map(function ($node) use ($renderer, $nodePath) {
             [
                 'state'    => $state,
-                'path'     => $path,
+                'name'     => $name,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
                 'children' => $children
             ] = $node;
-            $implodedNodePath = implode('.', $path);
+            $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages = [
                 REMOVED   => fn() => sprintf("Property '%s' was removed", $implodedNodePath),
-                UNCHANGED => fn() => empty($children) ? [] : $renderer($children),
+                UNCHANGED => fn() => empty($children) ? [] : $renderer($children, $implodedNodePath),
                 CHANGED   => fn() => sprintf(
                     "Property '%s' was changed. From '%s' to '%s'",
                     $implodedNodePath,
@@ -44,6 +44,6 @@ function format(array $diff): string
     };
     return implode(
         PHP_EOL,
-        array_filter(flatten($renderer($diff)))
+        array_filter(flatten($renderer($diff, '')))
     ) . PHP_EOL;
 }

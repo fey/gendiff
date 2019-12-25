@@ -1,9 +1,6 @@
 [
     {
         "name": "common",
-        "path": [
-            "common"
-        ],
         "state": "unchanged",
         "oldValue": {
             "setting1": "Value 1",
@@ -24,10 +21,6 @@
         "children": [
             {
                 "name": "setting1",
-                "path": [
-                    "common",
-                    "setting1"
-                ],
                 "state": "unchanged",
                 "oldValue": "Value 1",
                 "newValue": "Value 1",
@@ -35,10 +28,6 @@
             },
             {
                 "name": "setting2",
-                "path": [
-                    "common",
-                    "setting2"
-                ],
                 "state": "removed",
                 "oldValue": "200",
                 "newValue": null,
@@ -46,10 +35,6 @@
             },
             {
                 "name": "setting3",
-                "path": [
-                    "common",
-                    "setting3"
-                ],
                 "state": "unchanged",
                 "oldValue": true,
                 "newValue": true,
@@ -57,10 +42,6 @@
             },
             {
                 "name": "setting6",
-                "path": [
-                    "common",
-                    "setting6"
-                ],
                 "state": "removed",
                 "oldValue": {
                     "key": "value"
@@ -69,11 +50,6 @@
                 "children": [
                     {
                         "name": "key",
-                        "path": [
-                            "common",
-                            "setting6",
-                            "key"
-                        ],
                         "state": "unchanged",
                         "oldValue": "value",
                         "newValue": "value",
@@ -83,10 +59,6 @@
             },
             {
                 "name": "setting4",
-                "path": [
-                    "common",
-                    "setting4"
-                ],
                 "state": "added",
                 "oldValue": null,
                 "newValue": "blah blah",
@@ -94,10 +66,6 @@
             },
             {
                 "name": "setting5",
-                "path": [
-                    "common",
-                    "setting5"
-                ],
                 "state": "added",
                 "oldValue": null,
                 "newValue": {
@@ -106,11 +74,6 @@
                 "children": [
                     {
                         "name": "key5",
-                        "path": [
-                            "common",
-                            "setting5",
-                            "key5"
-                        ],
                         "state": "unchanged",
                         "oldValue": "value5",
                         "newValue": "value5",
@@ -122,9 +85,6 @@
     },
     {
         "name": "group1",
-        "path": [
-            "group1"
-        ],
         "state": "unchanged",
         "oldValue": {
             "baz": "bas",
@@ -137,10 +97,6 @@
         "children": [
             {
                 "name": "baz",
-                "path": [
-                    "group1",
-                    "baz"
-                ],
                 "state": "changed",
                 "oldValue": "bas",
                 "newValue": "bars",
@@ -148,10 +104,6 @@
             },
             {
                 "name": "foo",
-                "path": [
-                    "group1",
-                    "foo"
-                ],
                 "state": "unchanged",
                 "oldValue": "bar",
                 "newValue": "bar",
@@ -161,9 +113,6 @@
     },
     {
         "name": "group2",
-        "path": [
-            "group2"
-        ],
         "state": "removed",
         "oldValue": {
             "abc": "12345"
@@ -172,10 +121,6 @@
         "children": [
             {
                 "name": "abc",
-                "path": [
-                    "group2",
-                    "abc"
-                ],
                 "state": "unchanged",
                 "oldValue": "12345",
                 "newValue": "12345",
@@ -185,9 +130,6 @@
     },
     {
         "name": "group3",
-        "path": [
-            "group3"
-        ],
         "state": "added",
         "oldValue": null,
         "newValue": {
@@ -196,10 +138,6 @@
         "children": [
             {
                 "name": "fee",
-                "path": [
-                    "group3",
-                    "fee"
-                ],
                 "state": "unchanged",
                 "oldValue": "100500",
                 "newValue": "100500",
