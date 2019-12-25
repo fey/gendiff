@@ -11,20 +11,20 @@ class ParserTest extends TestCase
     /**
      * @dataProvider data
      */
-    public function testGenDiff($expected, $format)
+    public function testGenDiff($expectedOutputFile, $format)
     {
         $diff = genDiff(
-            $this->getFixturesDirectoryPath() . '/before.json',
-            $this->getFixturesDirectoryPath() . '/after.json',
+            $this->getFixturePath('/before.json'),
+            $this->getFixturePath('/after.json'),
             $format
         );
         $this->assertStringEqualsFile(
-            $this->getFixturesDirectoryPath() . $expected,
+            $this->getFixturePath($expectedOutputFile),
             $diff
         );
     }
 
-    public function data()
+    public function data(): array
     {
         return [
             'without params'              => ['pretty_diff.txt', null],
@@ -34,8 +34,8 @@ class ParserTest extends TestCase
         ];
     }
 
-    private function getFixturesDirectoryPath(): string
+    private function getFixturePath(string $fileName): string
     {
-        return __DIR__ . '/fixtures/';
+        return __DIR__ . '/fixtures/' . $fileName;
     }
 }
