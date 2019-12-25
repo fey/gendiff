@@ -9,12 +9,12 @@ function parse($fileContent, $parser)
     return $parser($fileContent);
 }
 
-function parseYaml($fileContent)
+function parseYaml($fileContent): array
 {
     return Yaml::parse($fileContent, Yaml::DUMP_OBJECT_AS_MAP);
 }
 
-function parseJson($fileContent)
+function parseJson($fileContent): array
 {
     return json_decode($fileContent, true);
 }
