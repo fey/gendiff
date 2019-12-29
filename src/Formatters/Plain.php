@@ -25,20 +25,10 @@ function format(array $diff): string
             ] = $node;
             $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages = [
-                REMOVED   => fn() => sprintf("Property '%s' was removed", $implodedNodePath),
+                REMOVED   => fn() => formatRemoved($implodedNodePath),
                 UNCHANGED => fn() => empty($children) ? [] : $format($children, $implodedNodePath),
-                CHANGED   => fn() => sprintf(
-                    "Property '%s' was changed. From '%s' to '%s'",
-                    $implodedNodePath,
-                    stringifyIfBoolValue($oldValue),
-                    stringifyIfBoolValue($newValue)
-                ),
-                ADDED     => fn() => sprintf(
-                    "Property '%s' was added with value: '%s'",
-                    $implodedNodePath,
-                    empty($children) ? stringifyIfBoolValue($newValue) : 'complex value'
-                ),
-
+                CHANGED   => fn() => formatChanged($implodedNodePath, $oldValue, $newValue),
+                ADDED     => fn() => formatAdded($implodedNodePath, $newValue),
             ];
 
             return $diffMessages[$state]();
@@ -48,4 +38,28 @@ function format(array $diff): string
         PHP_EOL,
         array_filter(flatten($format($diff, '')))
     ) . PHP_EOL;
+}
+
+function formatRemoved(string $nodeName): string
+{
+    return sprintf("Property '%s' was removed", $nodeName);
+}
+
+function formatChanged($nodeName, $oldValue, $newValue): string
+{
+    return sprintf(
+        "Property '%s' was changed. From '%s' to '%s'",
+        $nodeName,
+        stringifyIfBoolValue($oldValue),
+        stringifyIfBoolValue($newValue)
+    );
+}
+
+function formatAdded($nodeName, $newValue): string
+{
+    return sprintf(
+        "Property '%s' was added with value: '%s'",
+        $nodeName,
+        is_array($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
+    );
 }
