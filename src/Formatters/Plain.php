@@ -14,8 +14,8 @@ use const fey\GenDiff\Diff\{
 
 function format(array $diff): string
 {
-    $renderer = function ($nodes, $nodePath) use (&$renderer) {
-        return array_map(function ($node) use ($renderer, $nodePath) {
+    $format = function ($nodes, $nodePath) use (&$format) {
+        return array_map(function ($node) use ($format, $nodePath) {
             [
                 'state'    => $state,
                 'name'     => $name,
@@ -26,7 +26,7 @@ function format(array $diff): string
             $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages = [
                 REMOVED   => fn() => sprintf("Property '%s' was removed", $implodedNodePath),
-                UNCHANGED => fn() => empty($children) ? [] : $renderer($children, $implodedNodePath),
+                UNCHANGED => fn() => empty($children) ? [] : $format($children, $implodedNodePath),
                 CHANGED   => fn() => sprintf(
                     "Property '%s' was changed. From '%s' to '%s'",
                     $implodedNodePath,
@@ -46,6 +46,6 @@ function format(array $diff): string
     };
     return implode(
         PHP_EOL,
-        array_filter(flatten($renderer($diff, '')))
+        array_filter(flatten($format($diff, '')))
     ) . PHP_EOL;
 }
