@@ -8,7 +8,7 @@
     ],
     "autoload": {
         "files": [
-            "src/GenDiff.php",
+            "src/Diff.php",
             "src/Parsers.php",
             "src/Formatters/Pretty.php",
             "src/Formatters/Plain.php",

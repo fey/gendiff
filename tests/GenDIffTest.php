@@ -1,10 +1,10 @@
 <?php
 
-namespace GenDiff\Tests;
+namespace fey\GenDiff\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use function GenDiff\genDiff;
+use function fey\GenDiff\Diff\genDiff;
 
 class ParserTest extends TestCase
 {

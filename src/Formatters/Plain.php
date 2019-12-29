@@ -1,14 +1,16 @@
 <?php
 
-namespace GenDiff\Formatters\Plain;
+namespace fey\GenDiff\Formatters\Plain;
 
 use function Funct\Collection\flatten;
-use function GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
 
-use const GenDiff\CHANGED;
-use const GenDiff\UNCHANGED;
-use const GenDiff\REMOVED;
-use const GenDiff\ADDED;
+use const fey\GenDiff\Diff\{
+    UNCHANGED,
+    REMOVED,
+    ADDED,
+    CHANGED
+};
 
 function format(array $diff): string
 {

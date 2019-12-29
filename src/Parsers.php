@@ -1,12 +1,17 @@
 <?php
 
-namespace GenDiff\Parsers;
+namespace fey\GenDiff\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parse($fileContent, $parser)
+function parse($data, $type)
 {
-    return $parser($fileContent);
+    $parsers = [
+        'yaml' => fn($content) => parseYaml($content),
+        'yml'  => fn($content) => parseYaml($content),
+        'json' => fn($content) => parseJson($content),
+    ];
+    return $parsers[$type]($data);
 }
 
 function parseYaml($fileContent): array

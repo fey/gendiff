@@ -1,6 +1,6 @@
 <?php
 
-namespace GenDiff\Formatters\Json;
+namespace fey\GenDiff\Formatters\Json;
 
 function format($diff): string
 {

@@ -2,7 +2,7 @@
 
 <?php
 
-use function GenDiff\genDiff;
+use function fey\GenDiff\Diff\genDiff;
 
 $autoloadPath1 = __DIR__ . '/../../../autoload.php';
 $autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
@@ -22,7 +22,6 @@ Usage:
 Options:
   -h --help                     Show this screen
   --format <fmt>                Report format [default: pretty] Examples: pretty, plain, json
-
 DOC;
 
 $docopt = Docopt::handle($doc);
