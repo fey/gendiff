@@ -3,17 +3,15 @@
 namespace fey\GenDiff\Diff;
 
 use function fey\GenDiff\Parsers\parse;
+use function fey\GenDiff\Formatters\Plain\format as formatPlain;
+use function fey\GenDiff\Formatters\Json\format as formatJson;
+use function fey\GenDiff\Formatters\Pretty\format as formatPretty;
 
 const CHANGED   = 'changed';
 const UNCHANGED = 'unchanged';
 const REMOVED   = 'removed';
 const ADDED     = 'added';
 const DEFAULT_FORMATTER = 'pretty';
-const FORMATTERS = [
-    'plain'  => 'fey\GenDiff\Formatters\Plain\format',
-    'json'   => 'fey\GenDiff\Formatters\Json\format',
-    'pretty' => 'fey\GenDiff\Formatters\Pretty\format',
-];
 
 function genDiff(string $filePath1, string $filePath2, ?string $formatterName): string
 {
@@ -39,7 +37,6 @@ function makeAstDiff(array $data1, array $data2): array
         return array_map(function ($nodeName) use ($data1, $data2, $makeAst) {
             $oldValue = $data1[$nodeName] ?? null;
             $newValue = $data2[$nodeName] ?? null;
-            $state = UNCHANGED;
             $children = null;
 
             if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
@@ -55,6 +52,7 @@ function makeAstDiff(array $data1, array $data2): array
                 }
             }
             if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
+                $state = UNCHANGED;
                 if (is_array($oldValue) && is_array($newValue)) {
                     $children = $makeAst($oldValue, $newValue);
                 } elseif ($oldValue !== $newValue) {
@@ -77,5 +75,11 @@ function makeAstDiff(array $data1, array $data2): array
 
 function getFormatter($name)
 {
-    return FORMATTERS[$name ?? DEFAULT_FORMATTER];
+    $formatters = [
+        'plain'  => fn($diff) => formatPlain($diff),
+        'json'   => fn($diff) => formatJson($diff),
+        'pretty' => fn($diff) => formatPretty($diff),
+    ];
+
+    return $formatters[$name ?? DEFAULT_FORMATTER];
 }
