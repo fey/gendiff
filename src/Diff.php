@@ -38,6 +38,7 @@ function makeAstDiff(array $data1, array $data2): array
             $oldValue = $data1[$nodeName] ?? null;
             $newValue = $data2[$nodeName] ?? null;
             $children = null;
+            $state = UNCHANGED;
 
             if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
                 $state = REMOVED;

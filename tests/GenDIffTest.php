@@ -3,19 +3,23 @@
 namespace fey\GenDiff\Tests;
 
 use PHPUnit\Framework\TestCase;
-
 use function fey\GenDiff\Diff\genDiff;
 
 class GenDIffTest extends TestCase
 {
     /**
+     * @param string $before
+     * @param string $after
+     * @param string $expectedOutputFile
+     * @param string|null $format
+     *
      * @dataProvider data
      */
-    public function testGenDiff($expectedOutputFile, $format)
+    public function testGenDiff(string $before, string $after, string $expectedOutputFile, ?string $format): void
     {
         $diff = genDiff(
-            $this->getFixturePath('/before.json'),
-            $this->getFixturePath('/after.json'),
+            $this->getFixturePath($before),
+            $this->getFixturePath($after),
             $format
         );
         $this->assertStringEqualsFile(
@@ -24,16 +28,24 @@ class GenDIffTest extends TestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public function data(): array
     {
         return [
-            'without params'              => ['pretty_diff.txt', null],
-            'with pretty formatter param' => ['pretty_diff.txt', 'pretty'],
-            'plain formatter'             => ['plain_diff.txt', 'plain' ],
-            'json formatter'              => ['diff.json', 'json' ],
+            'without params yaml'         => ['before.yml', 'after.yml', 'yaml.txt', null],
+            'without params json'         => ['before.json', 'after.json', 'pretty_diff.txt', null],
+            'with pretty formatter param' => ['before.json', 'after.json', 'pretty_diff.txt', 'pretty'],
+            'plain formatter'             => ['before.json', 'after.json', 'plain_diff.txt', 'plain'],
+            'json formatter'              => ['before.json', 'after.json', 'diff.json', 'json'],
         ];
     }
 
+    /**
+     * @param string $fileName
+     * @return string
+     */
     private function getFixturePath(string $fileName): string
     {
         return __DIR__ . '/fixtures/' . $fileName;
