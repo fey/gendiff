@@ -5,7 +5,7 @@ namespace fey\GenDiff\Tests;
 use PHPUnit\Framework\TestCase;
 use function fey\GenDiff\Diff\genDiff;
 
-class GenDIffTest extends TestCase
+class GenDiffTest extends TestCase
 {
     /**
      * @param string $before
