@@ -55,7 +55,7 @@ function format(array $diff): string
 
     return implode(PHP_EOL, [
         '{',
-        ...($result),
+        ...$result,
         '}',
     ]) . PHP_EOL;
 }
