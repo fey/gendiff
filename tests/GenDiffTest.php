@@ -3,6 +3,7 @@
 namespace fey\GenDiff\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function fey\GenDiff\Diff\genDiff;
 
 class GenDiffTest extends TestCase
