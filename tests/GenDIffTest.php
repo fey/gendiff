@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 use function fey\GenDiff\Diff\genDiff;
 
-class ParserTest extends TestCase
+class GenDIffTest extends TestCase
 {
     /**
      * @dataProvider data
@@ -28,7 +28,7 @@ class ParserTest extends TestCase
     {
         return [
             'without params'              => ['pretty_diff.txt', null],
-            'with pertty formatter param' => ['pretty_diff.txt', 'pretty'],
+            'with pretty formatter param' => ['pretty_diff.txt', 'pretty'],
             'plain formatter'             => ['plain_diff.txt', 'plain' ],
             'json formatter'              => ['diff.json', 'json' ],
         ];
