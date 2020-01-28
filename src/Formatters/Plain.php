@@ -17,7 +17,7 @@ function format(array $diff): string
     $format = function ($nodes, $nodePath) use (&$format) {
         return array_map(function ($node) use ($format, $nodePath) {
             [
-                'state'    => $state,
+                'type'    => $type,
                 'name'     => $name,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
@@ -31,7 +31,7 @@ function format(array $diff): string
                 ADDED     => fn() => formatAdded($implodedNodePath, $newValue),
             ];
 
-            return $diffMessages[$state]();
+            return $diffMessages[$type]();
         }, $nodes);
     };
     return implode(

@@ -38,32 +38,32 @@ function makeAstDiff(array $data1, array $data2): array
             $oldValue = $data1[$nodeName] ?? null;
             $newValue = $data2[$nodeName] ?? null;
             $children = null;
-            $state = UNCHANGED;
+            $type = UNCHANGED;
 
             if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
-                $state = REMOVED;
+                $type = REMOVED;
                 if (is_array($oldValue)) {
                     $children = $makeAst($oldValue, $oldValue);
                 }
             }
             if (!array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
-                $state = ADDED;
+                $type = ADDED;
                 if (is_array($newValue)) {
                     $children = $makeAst($newValue, $newValue);
                 }
             }
             if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
-                $state = UNCHANGED;
+                $type = UNCHANGED;
                 if (is_array($oldValue) && is_array($newValue)) {
                     $children = $makeAst($oldValue, $newValue);
                 } elseif ($oldValue !== $newValue) {
-                    $state = CHANGED;
+                    $type = CHANGED;
                 }
             }
 
             return [
                 'name'     => $nodeName,
-                'state'    => $state,
+                'type'    => $type,
                 'oldValue' => $oldValue,
                 'newValue' => $newValue,
                 'children' => $children,

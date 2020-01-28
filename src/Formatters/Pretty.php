@@ -3,27 +3,21 @@
 namespace fey\GenDiff\Formatters\Pretty;
 
 use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
-
-use const fey\GenDiff\Diff\{
-    UNCHANGED,
-    REMOVED,
-    ADDED,
-    CHANGED
-};
+use const fey\GenDiff\Diff\{ADDED, CHANGED, REMOVED, UNCHANGED};
 
 function format(array $diff): string
 {
     $format = function ($diff, $level) use (&$format) {
         return array_map(function ($node) use ($level, $format) {
             $markUnchanged = '    ';
-            $markRemoved   = '  - ';
-            $markAdded     = '  + ';
+            $markRemoved = '  - ';
+            $markAdded = '  + ';
             $makeIndent = function ($level) {
                 return str_repeat('    ', $level);
             };
             $indent = $makeIndent($level);
             [
-                'state'    => $state,
+                'type'     => $type,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
                 'name'     => $nodeName,
@@ -37,25 +31,25 @@ function format(array $diff): string
                 $makeIndent($level + 1) . '}'
             ]);
             $diffMessages = [
-                UNCHANGED   => fn() => "{$indent}{$markUnchanged}{$nodeName}: "
+                UNCHANGED => fn() => "{$indent}{$markUnchanged}{$nodeName}: "
                     . ($stringifyChildren ?: $stringifyOldValue),
-                REMOVED     => fn() => "{$indent}{$markRemoved}{$nodeName}: "
+                REMOVED   => fn() => "{$indent}{$markRemoved}{$nodeName}: "
                     . ($stringifyChildren ?: $stringifyOldValue),
-                ADDED       => fn() => "{$indent}{$markAdded}{$nodeName}: "
+                ADDED     => fn() => "{$indent}{$markAdded}{$nodeName}: "
                     . ($stringifyChildren ?: $stringifyNewValue),
-                CHANGED     => fn() => implode(PHP_EOL, [
+                CHANGED   => fn() => implode(PHP_EOL, [
                     "{$indent}{$markAdded}{$nodeName}: {$stringifyNewValue}",
                     "{$indent}{$markRemoved}{$nodeName}: {$stringifyOldValue}"
                 ]),
             ];
-            return $diffMessages[$state]();
+            return $diffMessages[$type]();
         }, $diff);
     };
     $result = $format($diff, 0);
 
     return implode(PHP_EOL, [
-        '{',
-        ...$result,
-        '}',
-    ]) . PHP_EOL;
+            '{',
+            ...$result,
+            '}',
+        ]) . PHP_EOL;
 }
