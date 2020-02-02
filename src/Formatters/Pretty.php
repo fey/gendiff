@@ -3,43 +3,31 @@
 namespace fey\GenDiff\Formatters\Pretty;
 
 use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+
 use const fey\GenDiff\Diff\{ADDED, CHANGED, REMOVED, UNCHANGED};
+
+const MARK_SPACES = '    ';
+const MARK_MINUS = '  - ';
+const MARK_PLUS = '  + ';
 
 function format(array $diff): string
 {
     $format = function ($diff, $level) use (&$format) {
         return array_map(function ($node) use ($level, $format) {
-            $markUnchanged = '    ';
-            $markRemoved = '  - ';
-            $markAdded = '  + ';
-            $makeIndent = function ($level) {
-                return str_repeat('    ', $level);
-            };
-            $indent = $makeIndent($level);
             [
                 'type'     => $type,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
                 'name'     => $nodeName,
-                'children' => $children
             ] = $node;
-            $stringifyNewValue = stringifyIfBoolValue($newValue);
-            $stringifyOldValue = stringifyIfBoolValue($oldValue);
-            $stringifyChildren = empty($children) ? '' : implode(PHP_EOL, [
-                '{',
-                ...$format($children, $level + 1),
-                $makeIndent($level + 1) . '}'
-            ]);
-            $diffMessages = [
-                UNCHANGED => fn() => "{$indent}{$markUnchanged}{$nodeName}: "
-                    . ($stringifyChildren ?: $stringifyOldValue),
-                REMOVED   => fn() => "{$indent}{$markRemoved}{$nodeName}: "
-                    . ($stringifyChildren ?: $stringifyOldValue),
-                ADDED     => fn() => "{$indent}{$markAdded}{$nodeName}: "
-                    . ($stringifyChildren ?: $stringifyNewValue),
+
+            $diffMessages      = [
+                UNCHANGED => fn() => formatMessage($level, MARK_SPACES, $nodeName, $oldValue),
+                REMOVED   => fn() => formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
+                ADDED     => fn() => formatMessage($level, MARK_PLUS, $nodeName, $newValue),
                 CHANGED   => fn() => implode(PHP_EOL, [
-                    "{$indent}{$markAdded}{$nodeName}: {$stringifyNewValue}",
-                    "{$indent}{$markRemoved}{$nodeName}: {$stringifyOldValue}"
+                    formatMessage($level, MARK_PLUS, $nodeName, $newValue),
+                    formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
                 ]),
             ];
             return $diffMessages[$type]();
@@ -52,4 +40,14 @@ function format(array $diff): string
             ...$result,
             '}',
         ]) . PHP_EOL;
+}
+
+function formatMessage($indentLevel, $mark, $nodeName, $value)
+{
+    return sprintf('%s%s%s: %s', makeIndent($indentLevel), $mark, $nodeName, stringifyIfBoolValue($value));
+}
+
+function makeIndent($level)
+{
+    return str_repeat('    ', $level);
 }

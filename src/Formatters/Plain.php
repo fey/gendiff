@@ -2,29 +2,24 @@
 
 namespace fey\GenDiff\Formatters\Plain;
 
-use function Funct\Collection\flatten;
 use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+use function Funct\Collection\flatten;
 
-use const fey\GenDiff\Diff\{
-    UNCHANGED,
-    REMOVED,
-    ADDED,
-    CHANGED
-};
+use const fey\GenDiff\Diff\{ADDED, CHANGED, REMOVED, UNCHANGED};
 
 function format(array $diff): string
 {
     $format = function ($nodes, $nodePath) use (&$format) {
         return array_map(function ($node) use ($format, $nodePath) {
             [
-                'type'    => $type,
+                'type'     => $type,
                 'name'     => $name,
                 'newValue' => $newValue,
                 'oldValue' => $oldValue,
                 'children' => $children
             ] = $node;
             $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
-            $diffMessages = [
+            $diffMessages     = [
                 REMOVED   => fn() => formatRemoved($implodedNodePath),
                 UNCHANGED => fn() => empty($children) ? [] : $format($children, $implodedNodePath),
                 CHANGED   => fn() => formatChanged($implodedNodePath, $oldValue, $newValue),

@@ -19,7 +19,7 @@ function parseYaml($data): array
     return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
 }
 
-function parseJson($data): array
+function parseJson($data)
 {
-    return json_decode($data, true);
+    return json_decode($data);
 }
