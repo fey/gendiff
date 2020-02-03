@@ -11,6 +11,7 @@ const CHANGED           = 'changed';
 const UNCHANGED         = 'unchanged';
 const REMOVED           = 'removed';
 const ADDED             = 'added';
+const NESTED            = 'nested';
 const DEFAULT_FORMATTER = 'pretty';
 
 function genDiff(string $filePath1, string $filePath2, ?string $formatterName): string
@@ -37,9 +38,13 @@ function makeAstDiff($data1, $data2): array
         return array_reduce(
             $nodesNames,
             function ($diff, $nodeName) use (&$makeAst, $data1, $data2) {
+                var_dump($data1);
                 if (property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
-                    if (($data1->$nodeName === $data2->$nodeName)) {
+                    if ($data1->$nodeName === $data2->$nodeName) {
                         $type = UNCHANGED;
+                    } elseif (is_object($data1->$nodeName) && is_object($data2->$nodeName)) {
+                        $children = $makeAst($data1->$nodeName, $data2->$nodeName);
+                        $type = NESTED;
                     } else {
                         $type = CHANGED;
                     }
@@ -56,7 +61,7 @@ function makeAstDiff($data1, $data2): array
                         'name' => $nodeName,
                         'oldValue' => $data1->$nodeName ?? null,
                         'newValue' => $data2->$nodeName ?? null,
-                        'children' => [],
+                        'children' => $children ?? null,
                     ]
                 ];
             },
