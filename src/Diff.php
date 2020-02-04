@@ -38,7 +38,6 @@ function makeAstDiff($data1, $data2): array
         return array_reduce(
             $nodesNames,
             function ($diff, $nodeName) use (&$makeAst, $data1, $data2) {
-                var_dump($data1);
                 if (property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
                     if ($data1->$nodeName === $data2->$nodeName) {
                         $type = UNCHANGED;

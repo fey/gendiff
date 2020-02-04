@@ -25,7 +25,7 @@ function format(array $diff): string
             $diffMessages      = [
                 NESTED    => fn() => formatMessage($level, MARK_SPACES, $nodeName, $format($children, $level)),
                 UNCHANGED => fn() => formatMessage($level, MARK_SPACES, $nodeName, $oldValue),
-                REMOVED   => fn() => formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
+                REMOVED   => fn() => formatMessage($level, MARK_MINUS, $nodeName, (isComplexValue($oldValue) ? $format($oldValue, $level) : $oldValue)),
                 ADDED     => fn() => formatMessage($level, MARK_PLUS, $nodeName, $newValue),
                 CHANGED   => fn() => implode(PHP_EOL, [
                     formatMessage($level, MARK_PLUS, $nodeName, $newValue),
@@ -33,7 +33,7 @@ function format(array $diff): string
                 ]),
             ];
             return $diffMessages[$type]();
-        }, $diff);
+        }, is_object($diff) ? get_object_vars($diff) : $diff);
     };
     $result = $format($diff, 0);
 
@@ -54,7 +54,12 @@ function makeIndent($level)
     return str_repeat('    ', $level);
 }
 
-function stringifyComplexValue($value)
+function isComplexValue($value): bool
 {
-    return array_reduce(function () {});
+    return is_object($value) || is_array($value);
+}
+
+function renderComplexValue($complexValue, $level)
+{
+    return return array_map(function ($) {});
 }
