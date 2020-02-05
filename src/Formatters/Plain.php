@@ -52,7 +52,7 @@ function formatChanged($nodeName, $oldValue, $newValue): string
 
 function formatAdded($nodeName, $newValue): string
 {
-    return sprintf(
+        return sprintf(
         "Property '%s' was added with value: '%s'",
         $nodeName,
         is_array($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
