@@ -1,7 +1,7 @@
 [
     {
+        "type": "nested",
         "name": "common",
-        "type": "unchanged",
         "oldValue": {
             "setting1": "Value 1",
             "setting2": "200",
@@ -20,72 +20,56 @@
         },
         "children": [
             {
-                "name": "setting1",
                 "type": "unchanged",
+                "name": "setting1",
                 "oldValue": "Value 1",
                 "newValue": "Value 1",
                 "children": null
             },
             {
-                "name": "setting2",
                 "type": "removed",
+                "name": "setting2",
                 "oldValue": "200",
                 "newValue": null,
                 "children": null
             },
             {
-                "name": "setting3",
                 "type": "unchanged",
+                "name": "setting3",
                 "oldValue": true,
                 "newValue": true,
                 "children": null
             },
             {
-                "name": "setting6",
                 "type": "removed",
+                "name": "setting6",
                 "oldValue": {
                     "key": "value"
                 },
                 "newValue": null,
-                "children": [
-                    {
-                        "name": "key",
-                        "type": "unchanged",
-                        "oldValue": "value",
-                        "newValue": "value",
-                        "children": null
-                    }
-                ]
+                "children": null
             },
             {
-                "name": "setting4",
                 "type": "added",
+                "name": "setting4",
                 "oldValue": null,
                 "newValue": "blah blah",
                 "children": null
             },
             {
-                "name": "setting5",
                 "type": "added",
+                "name": "setting5",
                 "oldValue": null,
                 "newValue": {
                     "key5": "value5"
                 },
-                "children": [
-                    {
-                        "name": "key5",
-                        "type": "unchanged",
-                        "oldValue": "value5",
-                        "newValue": "value5",
-                        "children": null
-                    }
-                ]
+                "children": null
             }
         ]
     },
     {
+        "type": "nested",
         "name": "group1",
-        "type": "unchanged",
         "oldValue": {
             "baz": "bas",
             "foo": "bar"
@@ -96,15 +80,15 @@
         },
         "children": [
             {
-                "name": "baz",
                 "type": "changed",
+                "name": "baz",
                 "oldValue": "bas",
                 "newValue": "bars",
                 "children": null
             },
             {
-                "name": "foo",
                 "type": "unchanged",
+                "name": "foo",
                 "oldValue": "bar",
                 "newValue": "bar",
                 "children": null
@@ -112,37 +96,21 @@
         ]
     },
     {
-        "name": "group2",
         "type": "removed",
+        "name": "group2",
         "oldValue": {
             "abc": "12345"
         },
         "newValue": null,
-        "children": [
-            {
-                "name": "abc",
-                "type": "unchanged",
-                "oldValue": "12345",
-                "newValue": "12345",
-                "children": null
-            }
-        ]
+        "children": null
     },
     {
-        "name": "group3",
         "type": "added",
+        "name": "group3",
         "oldValue": null,
         "newValue": {
             "fee": "100500"
         },
-        "children": [
-            {
-                "name": "fee",
-                "type": "unchanged",
-                "oldValue": "100500",
-                "newValue": "100500",
-                "children": null
-            }
-        ]
+        "children": null
     }
 ]

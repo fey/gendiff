@@ -30,8 +30,8 @@ function format(array $diff): string
                         $nodeName,
                         implode(PHP_EOL, [
                             '{',
-                            ...$format($children, $level + 2),
-                            '}'
+                            ...$format($children, $level + 1),
+                            makeIndent($level + 1) . '}'
                         ]),
                     ),
                     UNCHANGED => fn() => formatMessage(
@@ -44,13 +44,13 @@ function format(array $diff): string
                         $level,
                         MARK_MINUS,
                         $nodeName,
-                        (is_object($oldValue) ? renderComplexValue(get_object_vars($oldValue), $level) : $oldValue)
+                        (is_object($oldValue) ? renderComplexValue(get_object_vars($oldValue), $level + 1) : $oldValue)
                     ),
                     ADDED     => fn() => formatMessage(
                         $level,
                         MARK_PLUS,
                         $nodeName,
-                        (is_object($newValue) ? renderComplexValue(get_object_vars($newValue), $level) : $newValue)
+                        (is_object($newValue) ? renderComplexValue(get_object_vars($newValue), $level + 1) : $newValue)
                     ),
                     CHANGED   => fn() => implode(
                         PHP_EOL,
@@ -69,13 +69,13 @@ function format(array $diff): string
     $result = $format($diff, 0);
 
     return implode(
-            PHP_EOL,
-            [
+        PHP_EOL,
+        [
                 '{',
                 ...$result,
                 '}',
             ]
-        ) . PHP_EOL;
+    ) . PHP_EOL;
 }
 
 function formatMessage($indentLevel, $mark, $nodeName, $value)
@@ -99,12 +99,12 @@ function renderComplexValue(array $complexValue, int $level): string
     return implode(
         PHP_EOL,
         [
-            makeIndent($level) . '{',
+            '{',
             ...array_map(
                 function ($value, $key) use ($level) {
                     return sprintf(
                         "%s%s: %s",
-                        makeIndent($level),
+                        makeIndent($level + 1),
                         $key,
                         isComplexValue($value) ? renderComplexValue($value, $level + 1) : $value
                     );
