@@ -35,11 +35,12 @@ class GenDiffTest extends TestCase
     public function data(): array
     {
         return [
-            'without params yaml'         => ['before.yml', 'after.yml', 'yaml.txt', null],
-            'without params json'         => ['before.json', 'after.json', 'pretty_diff.txt', null],
-            'with pretty formatter param' => ['before.json', 'after.json', 'pretty_diff.txt', 'pretty'],
+           'diff flat json'              => ['flat_before.json', 'flat_after.json', 'flat_diff.txt', null],
+           'without params yaml'         => ['before.yml', 'after.yml', 'yaml.txt', null],
+           'without params json'         => ['before.json', 'after.json', 'pretty_diff.txt', null],
+           'with pretty formatter param' => ['before.json', 'after.json', 'pretty_diff.txt', 'pretty'],
             'plain formatter'             => ['before.json', 'after.json', 'plain_diff.txt', 'plain'],
-            'json formatter'              => ['before.json', 'after.json', 'diff.json', 'json'],
+           'json formatter'              => ['before.json', 'after.json', 'diff.json', 'json'],
         ];
     }
 

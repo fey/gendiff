@@ -14,12 +14,12 @@ function parse($data, $type)
     return $parsers[$type]($data);
 }
 
-function parseYaml($data): array
+function parseYaml($data)
 {
-    return Yaml::parse($data, Yaml::DUMP_OBJECT_AS_MAP);
+    return Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP);
 }
 
-function parseJson($data): array
+function parseJson($data)
 {
-    return json_decode($data, true);
+    return json_decode($data);
 }
