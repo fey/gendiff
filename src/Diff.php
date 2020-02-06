@@ -42,7 +42,6 @@ function makeAstDiff($data1, $data2): array
                     if ($data1->$nodeName === $data2->$nodeName) {
                         $type = UNCHANGED;
                     } elseif (is_object($data1->$nodeName) && is_object($data2->$nodeName)) {
-                        $children = $makeDiff($data1->$nodeName, $data2->$nodeName);
                         $type = NESTED;
                     } else {
                         $type = CHANGED;
@@ -60,7 +59,7 @@ function makeAstDiff($data1, $data2): array
                         'name' => $nodeName,
                         'oldValue' => $data1->$nodeName ?? null,
                         'newValue' => $data2->$nodeName ?? null,
-                        'children' => $children ?? null,
+                        'children' => $type === NESTED ? $makeDiff($data1->$nodeName, $data2->$nodeName) : null,
                     ]
                 ];
             },
