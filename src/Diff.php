@@ -66,45 +66,6 @@ function makeAstDiff($data1, $data2): array
             },
             []
         );
-
-        return array_map(
-            function ($nodeName) use ($data1, $data2, $makeDiff) {
-                $oldValue = $data1->$nodeName ?? null;
-                $newValue = $data2->$nodeName ?? null;
-                $children = null;
-                $type     = UNCHANGED;
-
-                if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
-                    $type = REMOVED;
-                    if (is_array($oldValue)) {
-                        $children = $makeDiff($oldValue, $oldValue);
-                    }
-                }
-                if (!array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
-                    $type = ADDED;
-                    if (is_array($newValue)) {
-                        $children = $makeDiff($newValue, $newValue);
-                    }
-                }
-                if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
-                    $type = UNCHANGED;
-                    if (is_array($oldValue) && is_array($newValue)) {
-                        $children = $makeDiff($oldValue, $newValue);
-                    } elseif ($oldValue !== $newValue) {
-                        $type = CHANGED;
-                    }
-                }
-
-                return [
-                    'name'     => $nodeName,
-                    'type'     => $type,
-                    'oldValue' => $oldValue,
-                    'newValue' => $newValue,
-                    'children' => $children,
-                ];
-            },
-            $nodesNames
-        );
     };
     $result = $makeDiff($data1, $data2);
 
