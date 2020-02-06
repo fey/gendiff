@@ -1,12 +1,12 @@
 <?php
 
-namespace fey\GenDiff\Formatters\Plain;
+namespace GenDiff\Formatters\Plain;
 
-use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
-use function fey\GenDiff\Formatters\Helpers\isComplexValue;
+use function GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+use function GenDiff\Formatters\Helpers\isComplexValue;
 use function Funct\Collection\flatten;
 
-use const fey\GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
+use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
 function format(array $diff): string
 {

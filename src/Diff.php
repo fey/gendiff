@@ -1,11 +1,11 @@
 <?php
 
-namespace fey\GenDiff\Diff;
+namespace GenDiff\Diff;
 
-use function fey\GenDiff\Formatters\Json\format as formatJson;
-use function fey\GenDiff\Formatters\Plain\format as formatPlain;
-use function fey\GenDiff\Formatters\Pretty\format as formatPretty;
-use function fey\GenDiff\Parsers\parse;
+use function GenDiff\Formatters\Json\format as formatJson;
+use function GenDiff\Formatters\Plain\format as formatPlain;
+use function GenDiff\Formatters\Pretty\format as formatPretty;
+use function GenDiff\Parsers\parse;
 
 const CHANGED           = 'changed';
 const UNCHANGED         = 'unchanged';

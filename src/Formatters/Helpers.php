@@ -1,6 +1,6 @@
 <?php
 
-namespace fey\GenDiff\Formatters\Helpers;
+namespace GenDiff\Formatters\Helpers;
 
 function stringifyIfBoolValue($value)
 {

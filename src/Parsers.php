@@ -1,6 +1,6 @@
 <?php
 
-namespace fey\GenDiff\Parsers;
+namespace GenDiff\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
