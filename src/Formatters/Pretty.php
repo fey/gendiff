@@ -3,6 +3,7 @@
 namespace fey\GenDiff\Formatters\Pretty;
 
 use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+use function fey\GenDiff\Formatters\Helpers\isComplexValue;
 
 use const fey\GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
@@ -87,12 +88,6 @@ function makeIndent($level)
 {
     return str_repeat('    ', $level);
 }
-
-function isComplexValue($value): bool
-{
-    return is_object($value) || is_array($value);
-}
-
 
 function renderComplexValue(array $complexValue, int $level): string
 {

@@ -11,3 +11,8 @@ function stringifyIfBoolValue($value)
 
     return $value;
 }
+
+function isComplexValue($value): bool
+{
+    return is_object($value) || is_array($value);
+}

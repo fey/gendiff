@@ -3,7 +3,7 @@
 namespace fey\GenDiff\Formatters\Plain;
 
 use function fey\GenDiff\Formatters\Helpers\stringifyIfBoolValue;
-use function fey\GenDiff\Formatters\Pretty\isComplexValue;
+use function fey\GenDiff\Formatters\Helpers\isComplexValue;
 use function Funct\Collection\flatten;
 
 use const fey\GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
@@ -22,9 +22,10 @@ function format(array $diff): string
             $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
                 REMOVED   => fn() => formatRemoved($implodedNodePath),
-                UNCHANGED => fn() => empty($children) ? [] : $format($children, $implodedNodePath),
+                UNCHANGED => fn() => isComplexValue($oldValue) ? $format($children, $implodedNodePath) : '',
                 CHANGED   => fn() => formatChanged($implodedNodePath, $oldValue, $newValue),
                 ADDED     => fn() => formatAdded($implodedNodePath, $newValue),
+                NESTED    => fn() => $format($children, $implodedNodePath),
             ];
 
             return $diffMessages[$type]();
@@ -56,6 +57,6 @@ function formatAdded($nodeName, $newValue): string
         return sprintf(
             "Property '%s' was added with value: '%s'",
             $nodeName,
-            is_array($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
+            isComplexValue($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
         );
 }

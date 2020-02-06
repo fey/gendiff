@@ -32,17 +32,17 @@ function genDiff(string $filePath1, string $filePath2, ?string $formatterName): 
 
 function makeAstDiff($data1, $data2): array
 {
-    $makeAst = function ($data1, $data2) use (&$makeAst) {
+    $makeDiff = function ($data1, $data2) use (&$makeDiff) {
         $nodesNames = array_keys(array_merge((array)$data1, (array)$data2));
 
         return array_reduce(
             $nodesNames,
-            function ($diff, $nodeName) use (&$makeAst, $data1, $data2) {
+            function ($diff, $nodeName) use (&$makeDiff, $data1, $data2) {
                 if (property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
                     if ($data1->$nodeName === $data2->$nodeName) {
                         $type = UNCHANGED;
                     } elseif (is_object($data1->$nodeName) && is_object($data2->$nodeName)) {
-                        $children = $makeAst($data1->$nodeName, $data2->$nodeName);
+                        $children = $makeDiff($data1->$nodeName, $data2->$nodeName);
                         $type = NESTED;
                     } else {
                         $type = CHANGED;
@@ -68,7 +68,7 @@ function makeAstDiff($data1, $data2): array
         );
 
         return array_map(
-            function ($nodeName) use ($data1, $data2, $makeAst) {
+            function ($nodeName) use ($data1, $data2, $makeDiff) {
                 $oldValue = $data1->$nodeName ?? null;
                 $newValue = $data2->$nodeName ?? null;
                 $children = null;
@@ -77,19 +77,19 @@ function makeAstDiff($data1, $data2): array
                 if (array_key_exists($nodeName, $data1) && !array_key_exists($nodeName, $data2)) {
                     $type = REMOVED;
                     if (is_array($oldValue)) {
-                        $children = $makeAst($oldValue, $oldValue);
+                        $children = $makeDiff($oldValue, $oldValue);
                     }
                 }
                 if (!array_key_exists($nodeName, $data1) && array_key_exists($nodeName, $data2)) {
                     $type = ADDED;
                     if (is_array($newValue)) {
-                        $children = $makeAst($newValue, $newValue);
+                        $children = $makeDiff($newValue, $newValue);
                     }
                 }
                 if (array_key_exists($nodeName, $data2) && array_key_exists($nodeName, $data1)) {
                     $type = UNCHANGED;
                     if (is_array($oldValue) && is_array($newValue)) {
-                        $children = $makeAst($oldValue, $newValue);
+                        $children = $makeDiff($oldValue, $newValue);
                     } elseif ($oldValue !== $newValue) {
                         $type = CHANGED;
                     }
@@ -106,7 +106,7 @@ function makeAstDiff($data1, $data2): array
             $nodesNames
         );
     };
-    $result = $makeAst($data1, $data2);
+    $result = $makeDiff($data1, $data2);
 
     return $result;
 }
