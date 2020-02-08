@@ -19,13 +19,13 @@ function format(array $diff): string
                 'oldValue' => $oldValue,
                 'children' => $children
             ] = $node;
-            $implodedNodePath = implode('.', array_filter([$nodePath, $name]));
+            $ascendantNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
-                REMOVED   => fn() => formatRemoved($implodedNodePath),
-                UNCHANGED => fn() => isComplexValue($oldValue) ? $format($children, $implodedNodePath) : '',
-                CHANGED   => fn() => formatChanged($implodedNodePath, $oldValue, $newValue),
-                ADDED     => fn() => formatAdded($implodedNodePath, $newValue),
-                NESTED    => fn() => $format($children, $implodedNodePath),
+                REMOVED   => fn() => formatRemoved($ascendantNodePath),
+                UNCHANGED => fn() => '',
+                CHANGED   => fn() => formatChanged($ascendantNodePath, $oldValue, $newValue),
+                ADDED     => fn() => formatAdded($ascendantNodePath, $newValue),
+                NESTED    => fn() => $format($children, $ascendantNodePath),
             ];
 
             return $diffMessages[$type]();
