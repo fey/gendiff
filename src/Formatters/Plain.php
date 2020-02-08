@@ -21,10 +21,19 @@ function format(array $diff): string
             ] = $node;
             $ascendantNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
-                REMOVED   => fn() => formatRemoved($ascendantNodePath),
+                REMOVED   => fn() => sprintf("Property '%s' was removed", $ascendantNodePath),
                 UNCHANGED => fn() => '',
-                CHANGED   => fn() => formatChanged($ascendantNodePath, $oldValue, $newValue),
-                ADDED     => fn() => formatAdded($ascendantNodePath, $newValue),
+                CHANGED   => fn() => sprintf(
+                    "Property '%s' was changed. From '%s' to '%s'",
+                    $ascendantNodePath,
+                    stringifyIfBoolValue($oldValue),
+                    stringifyIfBoolValue($newValue)
+                ),
+                ADDED     => fn() => sprintf(
+                    "Property '%s' was added with value: '%s'",
+                    $ascendantNodePath,
+                    isComplexValue($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
+                ),
                 NESTED    => fn() => $format($children, $ascendantNodePath),
             ];
 

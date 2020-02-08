@@ -32,33 +32,48 @@ function genDiff(string $filePath1, string $filePath2, ?string $formatterName): 
 
 function makeAstDiff($data1, $data2): array
 {
-    $makeDiff = function ($data1, $data2) use (&$makeDiff) {
+    $makeDiff = function ($data1, $data2) use (&$makeDiff): array {
         $nodesNames = array_keys(array_merge((array)$data1, (array)$data2));
 
         return array_map(
             function ($nodeName) use (&$makeDiff, $data1, $data2) {
                 if (property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
                     if ($data1->$nodeName === $data2->$nodeName) {
-                        $type = UNCHANGED;
+                        return makeNode([
+                                'type'     => UNCHANGED,
+                                'name'     => $nodeName,
+                                'oldValue' => $data1->$nodeName,
+                        ]);
                     } elseif (is_object($data1->$nodeName) && is_object($data2->$nodeName)) {
-                        $type = NESTED;
+                        return makeNode([
+                                'type'     => NESTED,
+                                'name'     => $nodeName,
+                                'children' => $makeDiff($data1->$nodeName, $data2->$nodeName),
+                        ]);
                     } else {
-                        $type = CHANGED;
+                        return makeNode([
+                                'type'     => CHANGED,
+                                'name'     => $nodeName,
+                                'oldValue' => $data1->$nodeName,
+                                'newValue' => $data2->$nodeName,
+                        ]);
                     }
                 } elseif (!property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
-                    $type = ADDED;
+                    return makeNode([
+                            'type'     => ADDED,
+                            'name'     => $nodeName,
+                            'newValue' => $data2->$nodeName,
+                    ]);
                 } elseif (property_exists($data1, $nodeName) && !property_exists($data2, $nodeName)) {
-                    $type = REMOVED;
+                    return makeNode([
+                            'type'     => REMOVED,
+                            'name'     => $nodeName,
+                            'oldValue' => $data1->$nodeName
+                    ]);
                 }
-
-                return [
-                    'type' => $type,
-                    'name' => $nodeName,
-                    'oldValue' => $data1->$nodeName ?? null,
-                    'newValue' => $data2->$nodeName ?? null,
-                    'children' => $type === NESTED ? $makeDiff($data1->$nodeName, $data2->$nodeName) : null,
-                ];
-            }, $nodesNames);
+            },
+            $nodesNames
+        );
     };
 
     return $makeDiff($data1, $data2);
@@ -73,4 +88,18 @@ function getFormatter($name)
     ];
 
     return $formatters[$name ?? DEFAULT_FORMATTER];
+}
+
+function makeNode($nodeData): array
+{
+    return array_merge(
+        [
+            'type'     => null,
+            'name'     => null,
+            'oldValue' => null,
+            'newValue' => null,
+            'children' => null
+        ],
+        $nodeData
+    );
 }

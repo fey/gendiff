@@ -2,28 +2,14 @@
     {
         "type": "nested",
         "name": "common",
-        "oldValue": {
-            "setting1": "Value 1",
-            "setting2": "200",
-            "setting3": true,
-            "setting6": {
-                "key": "value"
-            }
-        },
-        "newValue": {
-            "setting1": "Value 1",
-            "setting3": true,
-            "setting4": "blah blah",
-            "setting5": {
-                "key5": "value5"
-            }
-        },
+        "oldValue": null,
+        "newValue": null,
         "children": [
             {
                 "type": "unchanged",
                 "name": "setting1",
                 "oldValue": "Value 1",
-                "newValue": "Value 1",
+                "newValue": null,
                 "children": null
             },
             {
@@ -37,7 +23,7 @@
                 "type": "unchanged",
                 "name": "setting3",
                 "oldValue": true,
-                "newValue": true,
+                "newValue": null,
                 "children": null
             },
             {
@@ -70,14 +56,8 @@
     {
         "type": "nested",
         "name": "group1",
-        "oldValue": {
-            "baz": "bas",
-            "foo": "bar"
-        },
-        "newValue": {
-            "foo": "bar",
-            "baz": "bars"
-        },
+        "oldValue": null,
+        "newValue": null,
         "children": [
             {
                 "type": "changed",
@@ -90,7 +70,7 @@
                 "type": "unchanged",
                 "name": "foo",
                 "oldValue": "bar",
-                "newValue": "bar",
+                "newValue": null,
                 "children": null
             }
         ]
