@@ -16,15 +16,15 @@ class GenDiffTest extends TestCase
      *
      * @dataProvider data
      */
-    public function testGenDiff(string $before, string $after, string $expectedOutputFile, ?string $format): void
+    public function testGenDiff(string $caseFormat, string $expectedOutputFile, ?string $format): void
     {
         $diff = genDiff(
-            $this->getFixturePath($before),
-            $this->getFixturePath($after),
+            $this->getFilepathBefore($caseFormat),
+            $this->getFilepathAfter($caseFormat),
             $format
         );
         $this->assertStringEqualsFile(
-            $this->getFixturePath($expectedOutputFile),
+            $this->getFilepathExpectedOutput($expectedOutputFile),
             $diff
         );
     }
@@ -32,15 +32,14 @@ class GenDiffTest extends TestCase
     /**
      * @return array
      */
-    public function data(): array
+    public function data()
     {
         return [
-           'diff flat json'              => ['flat_before.json', 'flat_after.json', 'flat_diff.txt', null],
-           'without params yaml'         => ['before.yml', 'after.yml', 'yaml.txt', null],
-           'without params json'         => ['before.json', 'after.json', 'pretty_diff.txt', null],
-           'with pretty formatter param' => ['before.json', 'after.json', 'pretty_diff.txt', 'pretty'],
-            'plain formatter'             => ['before.json', 'after.json', 'plain_diff.txt', 'plain'],
-           'json formatter'              => ['before.json', 'after.json', 'diff.json', 'json'],
+            'without params yaml'         => ['yml', 'pretty', null],
+            'without params json'         => ['json', 'pretty', null],
+            'with pretty formatter param' => ['json', 'pretty', 'pretty'],
+            'plain formatter'             => ['json', 'plain', 'plain'],
+            'json formatter'              => ['json', 'json', 'json'],
         ];
     }
 
@@ -48,8 +47,23 @@ class GenDiffTest extends TestCase
      * @param string $fileName
      * @return string
      */
-    private function getFixturePath(string $fileName): string
+    private function getFixturePath(): string
     {
-        return __DIR__ . '/fixtures/' . $fileName;
+        return __DIR__ . '/fixtures/';
+    }
+
+    private function getFilepathBefore(string $caseFormat): string
+    {
+        return "{$this->getFixturePath()}{$caseFormat}/before.{$caseFormat}";
+    }
+
+    private function getFilepathAfter(string $caseFormat): string
+    {
+        return "{$this->getFixturePath()}{$caseFormat}/after.{$caseFormat}";
+    }
+
+    private function getFilepathExpectedOutput(string $format): string
+    {
+        return "{$this->getFixturePath()}{$format}.txt";
     }
 }
