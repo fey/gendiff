@@ -45,27 +45,3 @@ function format(array $diff): string
         array_filter(flatten($format($diff, '')))
     ) . PHP_EOL;
 }
-
-function formatRemoved(string $nodeName): string
-{
-    return sprintf("Property '%s' was removed", $nodeName);
-}
-
-function formatChanged($nodeName, $oldValue, $newValue): string
-{
-    return sprintf(
-        "Property '%s' was changed. From '%s' to '%s'",
-        $nodeName,
-        stringifyIfBoolValue($oldValue),
-        stringifyIfBoolValue($newValue)
-    );
-}
-
-function formatAdded($nodeName, $newValue): string
-{
-        return sprintf(
-            "Property '%s' was added with value: '%s'",
-            $nodeName,
-            isComplexValue($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
-        );
-}
