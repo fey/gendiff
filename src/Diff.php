@@ -35,9 +35,8 @@ function makeAstDiff($data1, $data2): array
     $makeDiff = function ($data1, $data2) use (&$makeDiff) {
         $nodesNames = array_keys(array_merge((array)$data1, (array)$data2));
 
-        return array_reduce(
-            $nodesNames,
-            function ($diff, $nodeName) use (&$makeDiff, $data1, $data2) {
+        return array_map(
+            function ($nodeName) use (&$makeDiff, $data1, $data2) {
                 if (property_exists($data1, $nodeName) && property_exists($data2, $nodeName)) {
                     if ($data1->$nodeName === $data2->$nodeName) {
                         $type = UNCHANGED;
@@ -53,22 +52,16 @@ function makeAstDiff($data1, $data2): array
                 }
 
                 return [
-                    ...$diff,
-                    [
-                        'type' => $type,
-                        'name' => $nodeName,
-                        'oldValue' => $data1->$nodeName ?? null,
-                        'newValue' => $data2->$nodeName ?? null,
-                        'children' => $type === NESTED ? $makeDiff($data1->$nodeName, $data2->$nodeName) : null,
-                    ]
+                    'type' => $type,
+                    'name' => $nodeName,
+                    'oldValue' => $data1->$nodeName ?? null,
+                    'newValue' => $data2->$nodeName ?? null,
+                    'children' => $type === NESTED ? $makeDiff($data1->$nodeName, $data2->$nodeName) : null,
                 ];
-            },
-            []
-        );
+            }, $nodesNames);
     };
-    $result = $makeDiff($data1, $data2);
 
-    return $result;
+    return $makeDiff($data1, $data2);
 }
 
 function getFormatter($name)
