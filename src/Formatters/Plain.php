@@ -2,9 +2,10 @@
 
 namespace GenDiff\Formatters\Plain;
 
+use function Funct\Collection\compact as compactCollection;
+use function Funct\Collection\flatten;
 use function GenDiff\Formatters\Helpers\stringifyIfBoolValue;
 use function GenDiff\Formatters\Helpers\isComplexValue;
-use function Funct\Collection\flatten;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
@@ -42,6 +43,6 @@ function format(array $diff): string
     };
     return implode(
         PHP_EOL,
-        array_filter(flatten($format($diff, '')))
+            compactCollection(flatten($format($diff, '')))
     ) . PHP_EOL;
 }
