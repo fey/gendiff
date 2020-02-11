@@ -2,14 +2,9 @@
 
 namespace GenDiff\Formatters\Helpers;
 
-function stringifyIfBoolValue($value)
+function stringifyBoolValue(bool $value): string
 {
-    if (is_bool($value)) {
-        $val = $value ? 'true' : 'false';
-        return $val;
-    }
-
-    return $value;
+    return $value ? 'true' : 'false';
 }
 
 function isComplexValue($value): bool

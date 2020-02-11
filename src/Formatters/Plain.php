@@ -4,7 +4,7 @@ namespace GenDiff\Formatters\Plain;
 
 use function Funct\Collection\compact as compactCollection;
 use function Funct\Collection\flatten;
-use function GenDiff\Formatters\Helpers\stringifyIfBoolValue;
+use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 use function GenDiff\Formatters\Helpers\isComplexValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
@@ -27,13 +27,15 @@ function format(array $diff): string
                 CHANGED   => fn() => sprintf(
                     "Property '%s' was changed. From '%s' to '%s'",
                     $ascendantNodePath,
-                    stringifyIfBoolValue($oldValue),
-                    stringifyIfBoolValue($newValue)
+                    is_bool($oldValue) ? stringifyBoolValue($oldValue) : $oldValue,
+                    is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
                 ),
                 ADDED     => fn() => sprintf(
                     "Property '%s' was added with value: '%s'",
                     $ascendantNodePath,
-                    isComplexValue($newValue) ? 'complex value' : stringifyIfBoolValue($newValue)
+                    isComplexValue($newValue) ? 'complex value' : (
+                        is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
+                    )
                 ),
                 NESTED    => fn() => $format($children, $ascendantNodePath),
             ];

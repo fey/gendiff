@@ -2,8 +2,8 @@
 
 namespace GenDiff\Formatters\Pretty;
 
-use function GenDiff\Formatters\Helpers\stringifyIfBoolValue;
 use function GenDiff\Formatters\Helpers\isComplexValue;
+use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
@@ -25,41 +25,16 @@ function format(array $diff): string
                 ] = $node;
 
                 $diffMessages = [
-                    NESTED    => fn() => formatMessage(
-                        $level,
-                        MARK_SPACES,
-                        $nodeName,
-                        implode(PHP_EOL, [
-                            '{',
-                            ...$format($children, $level + 1),
-                            makeIndent($level + 1) . '}'
-                        ]),
-                    ),
-                    UNCHANGED => fn() => formatMessage(
-                        $level,
-                        MARK_SPACES,
-                        $nodeName,
-                        (is_object($oldValue) ? renderComplexValue(get_object_vars($oldValue), $level) : $oldValue)
-                    ),
-                    REMOVED   => fn() => formatMessage(
-                        $level,
-                        MARK_MINUS,
-                        $nodeName,
-                        (is_object($oldValue) ? renderComplexValue(get_object_vars($oldValue), $level + 1) : $oldValue)
-                    ),
-                    ADDED     => fn() => formatMessage(
-                        $level,
-                        MARK_PLUS,
-                        $nodeName,
-                        (is_object($newValue) ? renderComplexValue(get_object_vars($newValue), $level + 1) : $newValue)
-                    ),
-                    CHANGED   => fn() => implode(
-                        PHP_EOL,
-                        [
+                    NESTED    => fn() => formatMessage($level, MARK_SPACES, $nodeName, implode(PHP_EOL, [
+                        '{', ...$format($children, $level + 1), makeIndent($level + 1) . '}'
+                        ])),
+                    UNCHANGED => fn() => formatMessage($level, MARK_SPACES, $nodeName, $oldValue),
+                    REMOVED   => fn() => formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
+                    ADDED     => fn() => formatMessage($level, MARK_PLUS, $nodeName, $newValue),
+                    CHANGED   => fn() => implode(PHP_EOL, [
                             formatMessage($level, MARK_PLUS, $nodeName, $newValue),
                             formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
-                        ]
-                    ),
+                    ])
                 ];
 
                 return $diffMessages[$type]();
@@ -79,17 +54,31 @@ function format(array $diff): string
     ) . PHP_EOL;
 }
 
-function formatMessage($indentLevel, $mark, $nodeName, $value)
+function formatMessage(int $indentLevel, string $mark, string $nodeName, $value): string
 {
-    return sprintf('%s%s%s: %s', makeIndent($indentLevel), $mark, $nodeName, stringifyIfBoolValue($value));
+    $typeFormats = [
+        'object'  => fn($value) => stringifyComplexValue(get_object_vars($value), $indentLevel + 1),
+        'array'   => fn($value) => stringifyComplexValue($value),
+        'string'  => fn($value) => $value,
+        'boolean' => fn($value) => stringifyBoolValue($value),
+        'int'     => fn($value) => (string)$value,
+    ];
+
+    return sprintf(
+        '%s%s%s: %s',
+        makeIndent($indentLevel),
+        $mark,
+        $nodeName,
+        $typeFormats[gettype($value)]($value)
+    );
 }
 
-function makeIndent($level)
+function makeIndent(int $level): string
 {
     return str_repeat('    ', $level);
 }
 
-function renderComplexValue(array $complexValue, int $level): string
+function stringifyComplexValue(array $complexValue, int $level): string
 {
     return implode(
         PHP_EOL,
@@ -101,13 +90,13 @@ function renderComplexValue(array $complexValue, int $level): string
                         "%s%s: %s",
                         makeIndent($level + 1),
                         $key,
-                        isComplexValue($value) ? renderComplexValue($value, $level + 1) : $value
+                        isComplexValue($value) ? stringifyComplexValue($value, $level + 1) : $value
                     );
                 },
                 $complexValue,
                 array_keys($complexValue)
             ),
-            makeIndent($level) . '}'
+            makeIndent($level) . '}',
         ]
     );
 }
