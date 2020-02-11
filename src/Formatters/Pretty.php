@@ -83,10 +83,10 @@ function formatMessage(int $indentLevel, string $mark, string $nodeName, $value)
 
     $typeFormats = [
         'object'  => fn($value) => $stringifyComplexValue(get_object_vars($value), $indentLevel + 1),
-        'array'   => fn($value) => $stringifyComplexValue($value),
+        'array'   => fn($value) => $stringifyComplexValue($value, $indentLevel),
         'string'  => fn($value) => $value,
         'boolean' => fn($value) => stringifyBoolValue($value),
-        'int'     => fn($value) => (string)$value,
+        'integer' => fn($value) => (string)$value,
         'NULL'    => fn($value) => null,
     ];
 
