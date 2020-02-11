@@ -23,7 +23,7 @@ function format(array $diff): string
             $ascendantNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
                 REMOVED   => fn() => sprintf("Property '%s' was removed", $ascendantNodePath),
-                UNCHANGED => fn() => '',
+                UNCHANGED => fn() => null,
                 CHANGED   => fn() => sprintf(
                     "Property '%s' was changed. From '%s' to '%s'",
                     $ascendantNodePath,
