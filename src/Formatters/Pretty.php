@@ -87,6 +87,7 @@ function formatMessage(int $indentLevel, string $mark, string $nodeName, $value)
         'string'  => fn($value) => $value,
         'boolean' => fn($value) => stringifyBoolValue($value),
         'int'     => fn($value) => (string)$value,
+        'NULL'    => fn($value) => null,
     ];
 
     return sprintf(
