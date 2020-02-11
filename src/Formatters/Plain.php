@@ -43,6 +43,6 @@ function format(array $diff): string
     };
     return implode(
         PHP_EOL,
-            compactCollection(flatten($format($diff, '')))
+        compactCollection(flatten($format($diff, '')))
     ) . PHP_EOL;
 }

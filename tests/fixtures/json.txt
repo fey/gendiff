@@ -10,21 +10,21 @@
                 "name": "setting1",
                 "oldValue": "Value 1",
                 "newValue": null,
-                "children": null
+                "children": []
             },
             {
                 "type": "removed",
                 "name": "setting2",
                 "oldValue": "200",
                 "newValue": null,
-                "children": null
+                "children": []
             },
             {
                 "type": "unchanged",
                 "name": "setting3",
                 "oldValue": true,
                 "newValue": null,
-                "children": null
+                "children": []
             },
             {
                 "type": "removed",
@@ -33,14 +33,14 @@
                     "key": "value"
                 },
                 "newValue": null,
-                "children": null
+                "children": []
             },
             {
                 "type": "added",
                 "name": "setting4",
                 "oldValue": null,
                 "newValue": "blah blah",
-                "children": null
+                "children": []
             },
             {
                 "type": "added",
@@ -49,7 +49,7 @@
                 "newValue": {
                     "key5": "value5"
                 },
-                "children": null
+                "children": []
             }
         ]
     },
@@ -64,14 +64,14 @@
                 "name": "baz",
                 "oldValue": "bas",
                 "newValue": "bars",
-                "children": null
+                "children": []
             },
             {
                 "type": "unchanged",
                 "name": "foo",
                 "oldValue": "bar",
                 "newValue": null,
-                "children": null
+                "children": []
             }
         ]
     },
@@ -82,7 +82,7 @@
             "abc": "12345"
         },
         "newValue": null,
-        "children": null
+        "children": []
     },
     {
         "type": "added",
@@ -91,6 +91,6 @@
         "newValue": {
             "fee": "100500"
         },
-        "children": null
+        "children": []
     }
 ]
