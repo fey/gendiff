@@ -98,7 +98,7 @@ function makeNode($nodeData): array
             'name'     => null,
             'oldValue' => null,
             'newValue' => null,
-            'children' => null
+            'children' => []
         ],
         $nodeData
     );
