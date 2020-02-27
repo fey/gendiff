@@ -4,11 +4,16 @@ namespace GenDiff\Formatters\Plain;
 
 use function Funct\Collection\compact as compactCollection;
 use function Funct\Collection\flatten;
-use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 use function GenDiff\Formatters\Helpers\isComplexValue;
+use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
+use const GenDiff\Formatters\Helpers\END_OF_LINE;
+
+const MESSAGE_REMOVED = "Property '%s' was removed";
+const MESSAGE_CHANGED = "Property '%s' was changed. From '%s' to '%s'";
+const MESSAGE_ADDED = "Property '%s' was added with value: '%s'";
 function format(array $diff): string
 {
     $format = function ($nodes, $nodePath) use (&$format) {
@@ -22,16 +27,16 @@ function format(array $diff): string
             ] = $node;
             $ascendantNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
-                REMOVED   => fn() => sprintf("Property '%s' was removed", $ascendantNodePath),
+                REMOVED   => fn() => sprintf(MESSAGE_REMOVED, $ascendantNodePath),
                 UNCHANGED => fn() => null,
                 CHANGED   => fn() => sprintf(
-                    "Property '%s' was changed. From '%s' to '%s'",
+                    MESSAGE_CHANGED,
                     $ascendantNodePath,
                     is_bool($oldValue) ? stringifyBoolValue($oldValue) : $oldValue,
                     is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
                 ),
                 ADDED     => fn() => sprintf(
-                    "Property '%s' was added with value: '%s'",
+                    MESSAGE_ADDED,
                     $ascendantNodePath,
                     isComplexValue($newValue) ? 'complex value' : (
                         is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
@@ -44,7 +49,13 @@ function format(array $diff): string
         }, $nodes);
     };
     return implode(
-        PHP_EOL,
+        END_OF_LINE,
         compactCollection(flatten($format($diff, '')))
-    ) . PHP_EOL;
+    ) . END_OF_LINE;
+}
+
+
+function formatOutputMessage(string $state, )
+{
+
 }

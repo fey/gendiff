@@ -6,6 +6,8 @@ use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
 
+use const GenDiff\Formatters\Helpers\END_OF_LINE;
+
 const MARK_SPACES = '    ';
 const MARK_MINUS  = '  - ';
 const MARK_PLUS   = '  + ';
@@ -29,7 +31,7 @@ function format(array $diff): string
                         MARK_SPACES,
                         $nodeName,
                         implode(
-                            PHP_EOL,
+                            END_OF_LINE,
                             [
                                 '{',
                                 ...$format($children, $level + 1),
@@ -41,7 +43,7 @@ function format(array $diff): string
                     REMOVED   => fn() => formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
                     ADDED     => fn() => formatMessage($level, MARK_PLUS, $nodeName, $newValue),
                     CHANGED   => fn() => implode(
-                        PHP_EOL,
+                        END_OF_LINE,
                         [
                             formatMessage($level, MARK_PLUS, $nodeName, $newValue),
                             formatMessage($level, MARK_MINUS, $nodeName, $oldValue),
@@ -54,22 +56,15 @@ function format(array $diff): string
             is_object($diff) ? get_object_vars($diff) : $diff
         );
     };
-    $result = $format($diff, 0);
+    $result = implode(END_OF_LINE, ['{', ...$format($diff, 0), '}']);
 
-    return implode(
-        PHP_EOL,
-        [
-            '{',
-            ...$result,
-            '}',
-        ]
-    ) . PHP_EOL;
+    return $result . END_OF_LINE;
 }
 
 function formatMessage(int $indentLevel, string $mark, string $nodeName, $value): string
 {
     $stringifyComplexValue = fn($complexValue, $level) => implode(
-        PHP_EOL,
+        END_OF_LINE,
         [
             '{',
             ...array_map(
