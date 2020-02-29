@@ -4,16 +4,11 @@ namespace GenDiff\Formatters\Plain;
 
 use function Funct\Collection\compact as compactCollection;
 use function Funct\Collection\flatten;
-use function GenDiff\Formatters\Helpers\isComplexValue;
 use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
-
 use const GenDiff\Formatters\Helpers\END_OF_LINE;
 
-const MESSAGE_REMOVED = "Property '%s' was removed";
-const MESSAGE_CHANGED = "Property '%s' was changed. From '%s' to '%s'";
-const MESSAGE_ADDED = "Property '%s' was added with value: '%s'";
 function format(array $diff): string
 {
     $format = function ($nodes, $nodePath) use (&$format) {
@@ -27,20 +22,18 @@ function format(array $diff): string
             ] = $node;
             $ascendantNodePath = implode('.', array_filter([$nodePath, $name]));
             $diffMessages     = [
-                REMOVED   => fn() => sprintf(MESSAGE_REMOVED, $ascendantNodePath),
+                REMOVED   => fn() => sprintf("Property '%s' was removed", $ascendantNodePath),
                 UNCHANGED => fn() => null,
                 CHANGED   => fn() => sprintf(
-                    MESSAGE_CHANGED,
+                    "Property '%s' was changed. From '%s' to '%s'",
                     $ascendantNodePath,
-                    is_bool($oldValue) ? stringifyBoolValue($oldValue) : $oldValue,
-                    is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
+                    stringifyValue($oldValue),
+                    stringifyValue($newValue),
                 ),
                 ADDED     => fn() => sprintf(
-                    MESSAGE_ADDED,
+                    "Property '%s' was added with value: '%s'",
                     $ascendantNodePath,
-                    isComplexValue($newValue) ? 'complex value' : (
-                        is_bool($newValue) ? stringifyBoolValue($newValue) : $newValue
-                    )
+                    stringifyValue($newValue),
                 ),
                 NESTED    => fn() => $format($children, $ascendantNodePath),
             ];
@@ -55,7 +48,17 @@ function format(array $diff): string
 }
 
 
-function formatOutputMessage(string $state, )
+function stringifyValue($value)
 {
+    $complexValue = 'complex value';
+    $typeFormats = [
+        'object'  => fn($value) => $complexValue,
+        'array'   => fn($value) => $complexValue,
+        'string'  => fn($value) => $value,
+        'boolean' => fn($value) => stringifyBoolValue($value),
+        'integer' => fn($value) => (string)$value,
+        'NULL'    => fn($value) => null,
+    ];
 
+    return $typeFormats[gettype($value)]($value);
 }

@@ -5,7 +5,6 @@ namespace GenDiff\Formatters\Pretty;
 use function GenDiff\Formatters\Helpers\stringifyBoolValue;
 
 use const GenDiff\Diff\{ADDED, CHANGED, NESTED, REMOVED, UNCHANGED};
-
 use const GenDiff\Formatters\Helpers\END_OF_LINE;
 
 const MARK_SPACES = '    ';
