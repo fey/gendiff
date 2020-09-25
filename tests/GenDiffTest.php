@@ -35,9 +35,9 @@ class GenDiffTest extends TestCase
     public function data()
     {
         return [
-            'without params yaml'         => ['yml', 'pretty', null],
-            'without params json'         => ['json', 'pretty', null],
-            'with pretty formatter param' => ['json', 'pretty', 'pretty'],
+            'without params yaml'         => ['yml', 'stylish', null],
+            'without params json'         => ['json', 'stylish', null],
+            'with stylish formatter param' => ['json', 'stylish', 'stylish'],
             'plain formatter'             => ['json', 'plain', 'plain'],
             'json formatter'              => ['json', 'json', 'json'],
         ];

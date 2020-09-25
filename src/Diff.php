@@ -4,7 +4,7 @@ namespace GenDiff\Diff;
 
 use function GenDiff\Formatters\Json\format as formatJson;
 use function GenDiff\Formatters\Plain\format as formatPlain;
-use function GenDiff\Formatters\Pretty\format as formatPretty;
+use function GenDiff\Formatters\Pretty\format as formatStylish;
 use function GenDiff\Parsers\parse;
 
 const CHANGED           = 'changed';
@@ -12,7 +12,7 @@ const UNCHANGED         = 'unchanged';
 const REMOVED           = 'removed';
 const ADDED             = 'added';
 const NESTED            = 'nested';
-const DEFAULT_FORMATTER = 'pretty';
+const DEFAULT_FORMATTER = 'stylish';
 
 function genDiff(string $filePath1, string $filePath2, ?string $formatterName): string
 {
@@ -84,7 +84,7 @@ function getFormatter($name)
     $formatters = [
         'plain'  => fn($diff) => formatPlain($diff),
         'json'   => fn($diff) => formatJson($diff),
-        'pretty' => fn($diff) => formatPretty($diff),
+        'stylish' => fn($diff) => formatStylish($diff),
     ];
 
     return $formatters[$name ?? DEFAULT_FORMATTER];

@@ -21,7 +21,7 @@ Usage:
 
 Options:
   -h --help                     Show this screen
-  --format <fmt>                Report format [default: pretty] Examples: pretty, plain, json
+  --format <fmt>                Report format [default: stylish] Examples: stylish, plain, json
 DOC;
 
 $docopt = Docopt::handle($doc);
